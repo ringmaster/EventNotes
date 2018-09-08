@@ -65,8 +65,8 @@ class BBCalendar {
                 }
                 title = "O3: " + o3name + " " + isoFormatter.string(from: event.startDate)
             }
-            
         }
+        title = title.trimmingCharacters(in: " ")
         
         return title
     }
@@ -170,7 +170,8 @@ class BBCalendar {
         if let location:String = event.location {
             body += "\n> *Location:* " + location
         }
-        body += "\n> Index: [[Summary - " + isoFormatter.string(from: event.startDate) + "]]"
+        body += "\n> *Index:* [[Summary - " + isoFormatter.string(from: event.startDate) + "]]"
+        body += "\n> *Event ID:* " + event.eventIdentifier
         if let notes:String = event.notes {
             body += "\n---\n" + notes + "\n---\n"
         }

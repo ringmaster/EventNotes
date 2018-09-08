@@ -10,14 +10,26 @@ import Cocoa
 
 class CalViewController: NSViewController {
 
+    @IBOutlet weak var picker: NSDatePicker!
+    @IBOutlet weak var build: NSButton!
+    
+    @IBAction func pickerChange(_ sender: NSDatePicker) {
+        
+        let isoFormatter = DateFormatter()
+        isoFormatter.dateFormat = "yyyy-MM-dd"
+        
+        build.title = "Create Notes from " + isoFormatter.string(from: sender.dateValue)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do view setup here.
+        
+        picker.dateValue = Date()
     }
     
     @IBAction func buildClicked(_ sender: NSButtonCell) {
         let cal = BBCalendar()
-        cal.buildToday()
+        cal.build(target: picker.dateValue)
     }
     
     @IBAction func quitClicked(_ sender: NSButton) {

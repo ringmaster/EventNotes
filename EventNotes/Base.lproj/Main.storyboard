@@ -721,21 +721,21 @@
                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                     </datePickerCell>
                                                 </datePicker>
-                                                <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="26" horizontalPageScroll="10" verticalLineScroll="26" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IgW-DF-3og">
-                                                    <rect key="frame" x="141" y="47" width="276" height="147"/>
+                                                <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IgW-DF-3og">
+                                                    <rect key="frame" x="183" y="47" width="234" height="147"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <clipView key="contentView" ambiguous="YES" drawsBackground="NO" id="HOi-zG-ElG">
-                                                        <rect key="frame" x="1" y="1" width="274" height="145"/>
+                                                        <rect key="frame" x="1" y="1" width="232" height="145"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
-                                                            <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="sourceList" multipleSelection="NO" autosaveColumns="NO" rowHeight="24" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="XSJ-87-c6J" id="4vb-GU-PW4">
-                                                                <rect key="frame" x="0.0" y="0.0" width="274" height="145"/>
+                                                            <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="sourceList" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="XSJ-87-c6J" id="4vb-GU-PW4">
+                                                                <rect key="frame" x="0.0" y="0.0" width="232" height="145"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                                 <color key="backgroundColor" name="_sourceListBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                                 <tableColumns>
-                                                                    <tableColumn identifier="" width="271" minWidth="16" maxWidth="1000" id="XSJ-87-c6J">
+                                                                    <tableColumn identifier="" width="229" minWidth="16" maxWidth="1000" id="XSJ-87-c6J">
                                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
                                                                             <font key="font" metaFont="smallSystem"/>
                                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -749,11 +749,11 @@
                                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                         <prototypeCellViews>
                                                                             <tableCellView identifier="HeaderCell" id="LdC-sP-ys3">
-                                                                                <rect key="frame" x="1" y="1" width="271" height="17"/>
+                                                                                <rect key="frame" x="1" y="1" width="229" height="17"/>
                                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                 <subviews>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vJE-ex-3u4">
-                                                                                        <rect key="frame" x="0.0" y="1" width="271" height="14"/>
+                                                                                        <rect key="frame" x="0.0" y="1" width="229" height="14"/>
                                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="HEADER CELL" id="5aM-GM-Izl">
                                                                                             <font key="font" metaFont="smallSystemBold"/>
@@ -767,7 +767,7 @@
                                                                                 </connections>
                                                                             </tableCellView>
                                                                             <tableCellView identifier="DataCell" id="7Pt-p8-sby">
-                                                                                <rect key="frame" x="1" y="20" width="271" height="17"/>
+                                                                                <rect key="frame" x="1" y="20" width="229" height="17"/>
                                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                 <subviews>
                                                                                     <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="a0E-cJ-MYw">
@@ -776,7 +776,7 @@
                                                                                         <imageCell key="cell" refusesFirstResponder="YES" imageScaling="proportionallyDown" image="NSActionTemplate" id="ZtC-zl-ukz"/>
                                                                                     </imageView>
                                                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="EBF-bq-2Na">
-                                                                                        <rect key="frame" x="25" y="0.0" width="246" height="17"/>
+                                                                                        <rect key="frame" x="25" y="0.0" width="204" height="17"/>
                                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                                         <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="VgE-00-pgt">
                                                                                             <font key="font" metaFont="system"/>
@@ -798,14 +798,29 @@
                                                         <nil key="backgroundColor"/>
                                                     </clipView>
                                                     <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="X1b-OK-kdj">
-                                                        <rect key="frame" x="1" y="119" width="238" height="15"/>
+                                                        <rect key="frame" x="-7" y="-14" width="0.0" height="15"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </scroller>
                                                     <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="L1v-a3-5JW">
-                                                        <rect key="frame" x="224" y="17" width="15" height="102"/>
+                                                        <rect key="frame" x="-14" y="-7" width="15" height="0.0"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </scroller>
                                                 </scrollView>
+                                                <datePicker verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wHR-5O-3fd">
+                                                    <rect key="frame" x="10" y="46" width="139" height="148"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <datePickerCell key="cell" borderStyle="bezel" alignment="left" datePickerStyle="clockAndCalendar" id="Gkk-6g-eke">
+                                                        <font key="font" metaFont="system"/>
+                                                        <date key="date" timeIntervalSinceReferenceDate="558025200">
+                                                            <!--2018-09-07 15:00:00 +0000-->
+                                                        </date>
+                                                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                    </datePickerCell>
+                                                    <connections>
+                                                        <action selector="pickerChange:" target="XfG-lQ-9wD" id="Isv-Yg-dv0"/>
+                                                    </connections>
+                                                </datePicker>
                                             </subviews>
                                         </view>
                                     </tabViewItem>
@@ -832,6 +847,10 @@
                             </tabView>
                         </subviews>
                     </view>
+                    <connections>
+                        <outlet property="build" destination="cJx-Tn-t6I" id="Gfx-3u-bh2"/>
+                        <outlet property="picker" destination="wHR-5O-3fd" id="SSu-jV-pct"/>
+                    </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>

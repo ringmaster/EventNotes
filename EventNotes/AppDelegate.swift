@@ -60,14 +60,5 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func closePopover(sender: Any?) {
         popover.performClose(sender)
     }
-    
-    @IBAction func buildClicked(_ sender: NSMenuItem) {
-        let cal = BBCalendar()
-        cal.buildToday()
-    }
-    
-    @IBAction func quitClicked(sender: NSMenuItem) {
-        NSApplication.shared.terminate(self)
-    }
 }
 
