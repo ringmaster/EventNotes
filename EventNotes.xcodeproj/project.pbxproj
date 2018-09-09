@@ -14,6 +14,7 @@
 		552AD032213DC64300C9AB19 /* CalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552AD031213DC64300C9AB19 /* CalViewController.swift */; };
 		552AD034213DC72B00C9AB19 /* BBCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552AD033213DC72B00C9AB19 /* BBCalendar.swift */; };
 		552AD036213DC75C00C9AB19 /* StringExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552AD035213DC75C00C9AB19 /* StringExt.swift */; };
+		55495DAC21449E400016A5C4 /* EventMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55495DAB21449E400016A5C4 /* EventMonitor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		552AD031213DC64300C9AB19 /* CalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalViewController.swift; sourceTree = "<group>"; };
 		552AD033213DC72B00C9AB19 /* BBCalendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BBCalendar.swift; sourceTree = "<group>"; };
 		552AD035213DC75C00C9AB19 /* StringExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExt.swift; sourceTree = "<group>"; };
+		55495DAB21449E400016A5C4 /* EventMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventMonitor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +70,7 @@
 				552AD02A213DC59200C9AB19 /* Info.plist */,
 				552AD02B213DC59200C9AB19 /* EventNotes.entitlements */,
 				552AD033213DC72B00C9AB19 /* BBCalendar.swift */,
+				55495DAB21449E400016A5C4 /* EventMonitor.swift */,
 			);
 			path = EventNotes;
 			sourceTree = "<group>";
@@ -145,6 +148,7 @@
 				552AD024213DC59100C9AB19 /* ViewController.swift in Sources */,
 				552AD034213DC72B00C9AB19 /* BBCalendar.swift in Sources */,
 				552AD032213DC64300C9AB19 /* CalViewController.swift in Sources */,
+				55495DAC21449E400016A5C4 /* EventMonitor.swift in Sources */,
 				552AD022213DC59100C9AB19 /* AppDelegate.swift in Sources */,
 				552AD036213DC75C00C9AB19 /* StringExt.swift in Sources */,
 			);

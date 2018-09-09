@@ -12,6 +12,16 @@ import EventKit
 
 class BBCalendar {
     
+    public func getStore() -> EKEventStore? {
+        let store = EKEventStore()
+        
+        if EKEventStore.authorizationStatus(for: .event) != EKAuthorizationStatus.authorized {
+            store.requestAccess(to: .event, completion: {granted, error in})
+            return nil
+        } else {
+            return store
+        }
+    }
     
     func getCalendar(name:String, store:EKEventStore) -> EKCalendar?{
         var calUID:String = "?"
@@ -22,6 +32,17 @@ class BBCalendar {
             }
         }
         return store.calendar(withIdentifier: calUID)
+    }
+    
+    public func getCalendarList() -> [String] {
+        if let store = self.getStore() {
+            let cals = store.calendars(for: EKEntityType.event)
+            let calnames = cals.map { $0.title }
+            return calnames
+        }
+        else {
+            return []
+        }
     }
     
     public func addNote(title: String, body: String, tags: [String], show: Bool = false) {
@@ -66,9 +87,23 @@ class BBCalendar {
                 title = "O3: " + o3name + " " + isoFormatter.string(from: event.startDate)
             }
         }
-        title = title.trimmingCharacters(in: " ")
+        title = title.trimmingCharacters(in: .whitespacesAndNewlines)
         
         return title
+    }
+    
+    public func getDefault(prefix: String, postfix: String = "") -> String {
+        if let value = UserDefaults.standard.string(forKey: prefix) {
+            if value == "" {
+                return ""
+            }
+            else {
+                return value + postfix
+            }
+        }
+        else {
+            return ""
+        }
     }
     
     public func getEventTags(event: EKEvent) -> [String] {
@@ -76,7 +111,7 @@ class BBCalendar {
         slashFormatter.dateFormat = "yyyy/MM/dd"
         let attendees = event.attendees!
         
-        var tags = ["deleteme", "bearcal/" + slashFormatter.string(from: event.startDate)]
+        var tags = ["deleteme", self.getDefault(prefix: "dateTagPrefix", postfix: "/") + slashFormatter.string(from: event.startDate)]
         
         if attendees.count == 1 {
             var o3name = ""
@@ -89,7 +124,7 @@ class BBCalendar {
             
             let result = o3name.capturedGroups(withRegex: "^(\\S)\\S+\\s(.+)$")
             
-            tags.append("work/o3/" + result[0].lowercased() + result[1].lowercased())
+            tags.append(self.getDefault(prefix: "o3TagPrefix", postfix: "/") + result[0].lowercased() + result[1].lowercased())
         }
         
         return tags
@@ -116,33 +151,37 @@ class BBCalendar {
             
             // Create the predicate from the event store's instance method.
             var predicate: NSPredicate? = nil
-            let cal = self.getCalendar(name: "Calendar", store: store)
-            predicate = store.predicateForEvents(withStart: today, end: tomorrow, calendars: [cal!])
-            
-            // Fetch all events that match the predicate.
-            var events: [EKEvent]? = nil
-            if let aPredicate = predicate {
-                events = store.events(matching: aPredicate)
-            }
-            
-            if(events?.count == 0) {
-                return "No events today"
+            if let cal = self.getCalendar(name: self.getDefault(prefix: "calendarName"), store: store) {
+                predicate = store.predicateForEvents(withStart: today, end: tomorrow, calendars: [cal])
+                
+                // Fetch all events that match the predicate.
+                var events: [EKEvent]? = nil
+                if let aPredicate = predicate {
+                    events = store.events(matching: aPredicate)
+                }
+                
+                if(events?.count == 0) {
+                    return "No events today"
+                }
+                else {
+                    if var evts: [EKEvent] = events {
+                        
+                        evts.sort {
+                            return $0.startDate < $1.startDate
+                        }
+                        
+                        for event:EKEvent in evts {
+                            if event.startDate > Date() {
+                                return getEventTitle(event: event) + " in " + dateComponentsFormatter.string(from: Date(), to: event.startDate)!
+                            }
+                        }
+                        return "No events left today"
+                    }
+                    return "Unable to get event list"
+                }
             }
             else {
-                if var evts: [EKEvent] = events {
-                    
-                    evts.sort {
-                        return $0.startDate < $1.startDate
-                    }
-                    
-                    for event:EKEvent in evts {
-                        if event.startDate > Date() {
-                            return getEventTitle(event: event) + " in " + dateComponentsFormatter.string(from: Date(), to: event.startDate)!
-                        }
-                    }
-                    return "No events left today"
-                }
-                return "Unable to get event list"
+                return "Calendar not yet set"
             }
         }
     }
@@ -222,38 +261,39 @@ class BBCalendar {
             
             // Create the predicate from the event store's instance method.
             var predicate: NSPredicate? = nil
-            let cal = self.getCalendar(name: "Calendar", store: store)
-            predicate = store.predicateForEvents(withStart: today, end: tomorrow, calendars: [cal!])
-            
-            // Fetch all events that match the predicate.
-            var events: [EKEvent]? = nil
-            if let aPredicate = predicate {
-                events = store.events(matching: aPredicate)
-            }
-            print(events?.count ?? 0)
-            
-            var index:[String] = []
-            let indexTitle = "Summary - " + isoFormatter.string(from: today)
-            
-            if var evts: [EKEvent] = events {
+            if let cal = self.getCalendar(name: self.getDefault(prefix: "calendarName"), store: store) {
+                predicate = store.predicateForEvents(withStart: today, end: tomorrow, calendars: [cal])
                 
-                evts.sort {
-                    return $0.startDate < $1.startDate
+                // Fetch all events that match the predicate.
+                var events: [EKEvent]? = nil
+                if let aPredicate = predicate {
+                    events = store.events(matching: aPredicate)
                 }
+                print(events?.count ?? 0)
                 
-                for event in evts {
-                    print(event.title)
+                var index:[String] = []
+                let indexTitle = "Summary - " + isoFormatter.string(from: today)
+                
+                if var evts: [EKEvent] = events {
                     
-                    if event.hasAttendees {
-                        
-                        let title = noteFromEvent(event: event)
-                        
-                        index.append("* [[" + title + "]] @ " + timeFormatter.string(from: event.startDate) + " for " + dateComponentsFormatter.string(from: event.startDate, to: event.endDate)!)
+                    evts.sort {
+                        return $0.startDate < $1.startDate
                     }
+                    
+                    for event in evts {
+                        print(event.title)
+                        
+                        if event.hasAttendees {
+                            
+                            let title = noteFromEvent(event: event)
+                            
+                            index.append("* [[" + title + "]] @ " + timeFormatter.string(from: event.startDate) + " for " + dateComponentsFormatter.string(from: event.startDate, to: event.endDate)!)
+                        }
+                    }
+                    
+                    addNote(title: indexTitle, body: index.joined(separator: "\n"), tags: ["deleteme", self.getDefault(prefix: "dateTagPrefix", postfix: "/") + slashFormatter.string(from: today)], show: true)
+                    
                 }
-                
-                addNote(title: indexTitle, body: index.joined(separator: "\n"), tags: ["deleteme", "bearcal/" + slashFormatter.string(from: today)], show: true)
-                
             }
         }
     }
