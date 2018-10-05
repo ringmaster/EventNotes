@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import CallbackURLKit
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -41,7 +42,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 strongSelf.closePopover(sender: event)
             }
         }
-
+        
+        let manager = Manager.shared
+        manager.registerToURLEvent()
+        manager.callbackURLScheme = Manager.urlSchemes?.first
+        
+        CallbackURLKit.register(action: "test") { (parameters, success, failure, cancel) in
+            print("Success?")
+            success(nil)
+        }
     }
     
     func applicationWillTerminate(_ aNotification: Notification) {

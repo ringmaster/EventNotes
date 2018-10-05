@@ -74,18 +74,21 @@ class BBCalendar {
         let isoFormatter = DateFormatter()
         isoFormatter.dateFormat = "yyyy-MM-dd"
         
-        if let attendees:[EKParticipant] = event.attendees {
-            
-            if attendees.count == 1 {
-                var o3name = ""
-                if(event.organizer!.isCurrentUser) {
-                    o3name = attendees.first!.name!
+        if event.hasRecurrenceRules {
+            if let attendees:[EKParticipant] = event.attendees {
+                if attendees.count == 1 {
+                    var o3name = ""
+                    if(event.organizer!.isCurrentUser) {
+                        o3name = attendees.first!.name!
+                    }
+                    else {
+                        o3name = event.organizer!.name!
+                    }
+                    title = "O3: " + o3name
                 }
-                else {
-                    o3name = event.organizer!.name!
-                }
-                title = "O3: " + o3name + " " + isoFormatter.string(from: event.startDate)
             }
+
+            title = title + " " + isoFormatter.string(from: event.startDate)
         }
         title = title.trimmingCharacters(in: .whitespacesAndNewlines)
         
@@ -209,12 +212,12 @@ class BBCalendar {
         if let location:String = event.location {
             body += "\n> *Location:* " + location
         }
-        body += "\n> *Index:* [[Summary - " + isoFormatter.string(from: event.startDate) + "]]"
+        body += "\n> *Index:* [[⭐️ Summary - " + isoFormatter.string(from: event.startDate) + "]]"
         body += "\n> *Event ID:* " + event.eventIdentifier
         if let notes:String = event.notes {
             body += "\n---\n" + notes + "\n---\n"
         }
-        // body = body.replace(/https:\/\/.*bluejeans.com\/(\S+)/g, "bjnb://meet/id/$1")
+        body = body.replace(pattern: "https?://\\S*bluejeans.com/(\\S+)", withTemplate: "bjnb://meet/id/$1")
         
         addNote(title: title, body: body, tags: tags)
         
@@ -272,7 +275,7 @@ class BBCalendar {
                 print(events?.count ?? 0)
                 
                 var index:[String] = []
-                let indexTitle = "Summary - " + isoFormatter.string(from: today)
+                let indexTitle = "⭐️ Summary - " + isoFormatter.string(from: today)
                 
                 if var evts: [EKEvent] = events {
                     
@@ -291,7 +294,7 @@ class BBCalendar {
                         }
                     }
                     
-                    addNote(title: indexTitle, body: index.joined(separator: "\n"), tags: ["deleteme", self.getDefault(prefix: "dateTagPrefix", postfix: "/") + slashFormatter.string(from: today)], show: true)
+                    addNote(title: indexTitle, body: index.joined(separator: "\n"), tags: ["deleteme", self.getDefault(prefix: "dateTagPrefix", postfix: "/") + slashFormatter.string(from: today), self.getDefault(prefix: "dateTagPrefix", postfix: "/") + "summary"], show: true)
                     
                 }
             }

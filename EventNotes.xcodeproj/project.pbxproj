@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,9 +15,13 @@
 		552AD034213DC72B00C9AB19 /* BBCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552AD033213DC72B00C9AB19 /* BBCalendar.swift */; };
 		552AD036213DC75C00C9AB19 /* StringExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552AD035213DC75C00C9AB19 /* StringExt.swift */; };
 		55495DAC21449E400016A5C4 /* EventMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55495DAB21449E400016A5C4 /* EventMonitor.swift */; };
+		55495DAE2145A9100016A5C4 /* EventNote.icns in Resources */ = {isa = PBXBuildFile; fileRef = 55495DAD2145A9100016A5C4 /* EventNote.icns */; };
+		55495DB02145A91B0016A5C4 /* icon_512x512.png in Resources */ = {isa = PBXBuildFile; fileRef = 55495DAF2145A91B0016A5C4 /* icon_512x512.png */; };
+		70CE7E7E091795FC768E0C3A /* Pods_EventNotes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87E989DC26F8D5DD768D0DCC /* Pods_EventNotes.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		03E6F22BDC9627F8858A6917 /* Pods-EventNotes.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EventNotes.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EventNotes/Pods-EventNotes.debug.xcconfig"; sourceTree = "<group>"; };
 		552AD01E213DC59100C9AB19 /* EventNotes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EventNotes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		552AD021213DC59100C9AB19 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		552AD023213DC59100C9AB19 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -29,6 +33,10 @@
 		552AD033213DC72B00C9AB19 /* BBCalendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BBCalendar.swift; sourceTree = "<group>"; };
 		552AD035213DC75C00C9AB19 /* StringExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExt.swift; sourceTree = "<group>"; };
 		55495DAB21449E400016A5C4 /* EventMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventMonitor.swift; sourceTree = "<group>"; };
+		55495DAD2145A9100016A5C4 /* EventNote.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = EventNote.icns; sourceTree = "<group>"; };
+		55495DAF2145A91B0016A5C4 /* icon_512x512.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_512x512.png; sourceTree = "<group>"; };
+		87E989DC26F8D5DD768D0DCC /* Pods_EventNotes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EventNotes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A98CE2539DF97F4861ED4D28 /* Pods-EventNotes.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EventNotes.release.xcconfig"; path = "Pods/Target Support Files/Pods-EventNotes/Pods-EventNotes.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,17 +44,39 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				70CE7E7E091795FC768E0C3A /* Pods_EventNotes.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		25570099C113A7D8964AFC67 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				03E6F22BDC9627F8858A6917 /* Pods-EventNotes.debug.xcconfig */,
+				A98CE2539DF97F4861ED4D28 /* Pods-EventNotes.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		339A642FA1012658FCA4029F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				87E989DC26F8D5DD768D0DCC /* Pods_EventNotes.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		552AD015213DC59100C9AB19 = {
 			isa = PBXGroup;
 			children = (
+				55495DAF2145A91B0016A5C4 /* icon_512x512.png */,
+				55495DAD2145A9100016A5C4 /* EventNote.icns */,
 				552AD020213DC59100C9AB19 /* EventNotes */,
 				552AD01F213DC59100C9AB19 /* Products */,
+				25570099C113A7D8964AFC67 /* Pods */,
+				339A642FA1012658FCA4029F /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -82,9 +112,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 552AD02E213DC59200C9AB19 /* Build configuration list for PBXNativeTarget "EventNotes" */;
 			buildPhases = (
+				32A0AD5224EA2BC5E1A5BC32 /* [CP] Check Pods Manifest.lock */,
 				552AD01A213DC59100C9AB19 /* Sources */,
 				552AD01B213DC59100C9AB19 /* Frameworks */,
 				552AD01C213DC59100C9AB19 /* Resources */,
+				D3DA64D093C5DFFCD3DEE5D4 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -111,7 +143,7 @@
 				};
 			};
 			buildConfigurationList = 552AD019213DC59100C9AB19 /* Build configuration list for PBXProject "EventNotes" */;
-			compatibilityVersion = "Xcode 9.3";
+			compatibilityVersion = "Xcode 10.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -135,10 +167,51 @@
 			files = (
 				552AD026213DC59200C9AB19 /* Assets.xcassets in Resources */,
 				552AD029213DC59200C9AB19 /* Main.storyboard in Resources */,
+				55495DAE2145A9100016A5C4 /* EventNote.icns in Resources */,
+				55495DB02145A91B0016A5C4 /* icon_512x512.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		32A0AD5224EA2BC5E1A5BC32 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-EventNotes-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D3DA64D093C5DFFCD3DEE5D4 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-EventNotes/Pods-EventNotes-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/CallbackURLKit/CallbackURLKit.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CallbackURLKit.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-EventNotes/Pods-EventNotes-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		552AD01A213DC59100C9AB19 /* Sources */ = {
@@ -283,11 +356,14 @@
 		};
 		552AD02F213DC59200C9AB19 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 03E6F22BDC9627F8858A6917 /* Pods-EventNotes.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = EventNotes/EventNotes.entitlements;
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5FD8ZXLZ4V;
 				INFOPLIST_FILE = EventNotes/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -301,11 +377,14 @@
 		};
 		552AD030213DC59200C9AB19 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A98CE2539DF97F4861ED4D28 /* Pods-EventNotes.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = EventNotes/EventNotes.entitlements;
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5FD8ZXLZ4V;
 				INFOPLIST_FILE = EventNotes/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

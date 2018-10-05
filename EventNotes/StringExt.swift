@@ -35,4 +35,14 @@ extension String {
         
         return results
     }
+    
+    func replace(pattern:String, withTemplate:String) -> String {
+        var _text = self
+        
+        let regex = try! NSRegularExpression(pattern: pattern, options: .caseInsensitive)
+        
+        _text = regex.stringByReplacingMatches(in: _text, options: [], range: NSMakeRange(0, _text.count), withTemplate: withTemplate)
+        
+        return _text
+    }
 }
