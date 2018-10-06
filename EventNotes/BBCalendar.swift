@@ -134,58 +134,26 @@ class BBCalendar {
     }
     
     public func currentEventTitle()->String {
-        let store = EKEventStore()
-        
-        if EKEventStore.authorizationStatus(for: .event) != EKAuthorizationStatus.authorized {
-            store.requestAccess(to: .event, completion: {granted, error in})
-            return "Calendar access denied"
-        } else {
-            
-            let calendar = Calendar.current
-            
-            let today = calendar.startOfDay(for: Date())
-            let tomorrowComponents = DateComponents(day: 1)
-            let tomorrow = calendar.date(byAdding: tomorrowComponents, to: today)!
-            
+        var evts = getEventsByDate(target: Date())
+        if(evts.count == 0) {
+            return "No events today"
+        }
+        else {
+            evts.sort {
+                return $0.startDate < $1.startDate
+            }
             let dateComponentsFormatter = DateComponentsFormatter()
-            dateComponentsFormatter.allowedUnits = [.year,.month,.weekOfMonth,.day,.hour,.minute]
-            dateComponentsFormatter.maximumUnitCount = 2
-            dateComponentsFormatter.unitsStyle = .brief
+            dateComponentsFormatter.allowedUnits = [.year,.month,.weekOfMonth,.day,.hour,.minute,.second]
+            //dateComponentsFormatter.maximumUnitCount = 2
+            dateComponentsFormatter.unitsStyle = .abbreviated
+
             
-            // Create the predicate from the event store's instance method.
-            var predicate: NSPredicate? = nil
-            if let cal = self.getCalendar(name: self.getDefault(prefix: "calendarName"), store: store) {
-                predicate = store.predicateForEvents(withStart: today, end: tomorrow, calendars: [cal])
-                
-                // Fetch all events that match the predicate.
-                var events: [EKEvent]? = nil
-                if let aPredicate = predicate {
-                    events = store.events(matching: aPredicate)
-                }
-                
-                if(events?.count == 0) {
-                    return "No events today"
-                }
-                else {
-                    if var evts: [EKEvent] = events {
-                        
-                        evts.sort {
-                            return $0.startDate < $1.startDate
-                        }
-                        
-                        for event:EKEvent in evts {
-                            if event.startDate > Date() {
-                                return getEventTitle(event: event) + " in " + dateComponentsFormatter.string(from: Date(), to: event.startDate)!
-                            }
-                        }
-                        return "No events left today"
-                    }
-                    return "Unable to get event list"
+            for event:EKEvent in evts {
+                if event.startDate > Date() {
+                    return getEventTitle(event: event) + " in " + dateComponentsFormatter.string(from: Date(), to: event.startDate)!
                 }
             }
-            else {
-                return "Calendar not yet set"
-            }
+            return "No events left today"
         }
     }
     
@@ -229,8 +197,7 @@ class BBCalendar {
         self.build(target: calendar.startOfDay(for: Date()))
     }
     
-    
-    public func build(target:Date) {
+    public func getEventsByDate(target: Date) -> [EKEvent] {
         let store = EKEventStore()
         
         if EKEventStore.authorizationStatus(for: .event) != EKAuthorizationStatus.authorized {
@@ -239,28 +206,10 @@ class BBCalendar {
             
             let calendar = Calendar.current
             
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd HH:mm"
-            
-            let isoFormatter = DateFormatter()
-            isoFormatter.dateFormat = "yyyy-MM-dd"
-            
             let today = calendar.startOfDay(for: target)
             
             let tomorrowComponents = DateComponents(day: 1)
             let tomorrow = calendar.date(byAdding: tomorrowComponents, to: today)!
-            
-            
-            let slashFormatter = DateFormatter()
-            slashFormatter.dateFormat = "yyyy/MM/dd"
-            
-            let timeFormatter = DateFormatter()
-            timeFormatter.dateFormat = "h:mma"
-            
-            let dateComponentsFormatter = DateComponentsFormatter()
-            dateComponentsFormatter.allowedUnits = [.year,.month,.weekOfMonth,.day,.hour,.minute,.second]
-            //dateComponentsFormatter.maximumUnitCount = 2
-            dateComponentsFormatter.unitsStyle = .abbreviated
             
             // Create the predicate from the event store's instance method.
             var predicate: NSPredicate? = nil
@@ -272,33 +221,54 @@ class BBCalendar {
                 if let aPredicate = predicate {
                     events = store.events(matching: aPredicate)
                 }
-                print(events?.count ?? 0)
-                
-                var index:[String] = []
-                let indexTitle = "⭐️ Summary - " + isoFormatter.string(from: today)
-                
-                if var evts: [EKEvent] = events {
-                    
-                    evts.sort {
-                        return $0.startDate < $1.startDate
-                    }
-                    
-                    for event in evts {
-                        print(event.title)
-                        
-                        if event.hasAttendees {
-                            
-                            let title = noteFromEvent(event: event)
-                            
-                            index.append("* [[" + title + "]] @ " + timeFormatter.string(from: event.startDate) + " for " + dateComponentsFormatter.string(from: event.startDate, to: event.endDate)!)
-                        }
-                    }
-                    
-                    addNote(title: indexTitle, body: index.joined(separator: "\n"), tags: ["deleteme", self.getDefault(prefix: "dateTagPrefix", postfix: "/") + slashFormatter.string(from: today), self.getDefault(prefix: "dateTagPrefix", postfix: "/") + "summary"], show: true)
-                    
+                if let evts: [EKEvent] = events {
+                    return evts
                 }
             }
         }
+        return []
+    }
+    
+    public func build(target:Date) {
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm"
+        
+        let isoFormatter = DateFormatter()
+        isoFormatter.dateFormat = "yyyy-MM-dd"
+
+        let slashFormatter = DateFormatter()
+        slashFormatter.dateFormat = "yyyy/MM/dd"
+        
+        let timeFormatter = DateFormatter()
+        timeFormatter.dateFormat = "h:mma"
+        
+        let dateComponentsFormatter = DateComponentsFormatter()
+        dateComponentsFormatter.allowedUnits = [.year,.month,.weekOfMonth,.day,.hour,.minute,.second]
+        //dateComponentsFormatter.maximumUnitCount = 2
+        dateComponentsFormatter.unitsStyle = .abbreviated
+
+        var evts = getEventsByDate(target: target)
+        
+        var index:[String] = []
+        let indexTitle = "⭐️ Summary - " + isoFormatter.string(from: Calendar.current.startOfDay(for: target))
+                
+        evts.sort {
+            return $0.startDate < $1.startDate
+        }
+        
+        for event in evts {
+            print(event.title)
+            
+            if event.hasAttendees {
+                
+                let title = noteFromEvent(event: event)
+                
+                index.append("* [[" + title + "]] @ " + timeFormatter.string(from: event.startDate) + " for " + dateComponentsFormatter.string(from: event.startDate, to: event.endDate)!)
+            }
+        }
+        
+        addNote(title: indexTitle, body: index.joined(separator: "\n"), tags: ["deleteme", self.getDefault(prefix: "dateTagPrefix", postfix: "/") + slashFormatter.string(from: Calendar.current.startOfDay(for: target)), self.getDefault(prefix: "dateTagPrefix", postfix: "/") + "summary"], show: true)
     }
     
     

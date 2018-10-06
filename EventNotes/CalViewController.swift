@@ -8,6 +8,9 @@
 
 import Cocoa
 
+let cal = BBCalendar()
+var bizcache = [String]()
+
 class CalViewController: NSViewController {
 
     @IBOutlet weak var picker: NSDatePicker!
@@ -16,13 +19,19 @@ class CalViewController: NSViewController {
     @IBOutlet weak var calList: NSComboBox!
     @IBOutlet weak var dateTagPrefix: NSTextField!
     @IBOutlet weak var o3TagPrefix: NSTextField!
+    @IBOutlet weak var tableView: NSTableView!
+    @IBOutlet weak var templates: NSTabViewItem!
     
+    @IBAction func update(_ sender: NSButtonCell) {
+        tableView.reloadData()
+    }
     @IBAction func pickerChange(_ sender: NSDatePicker) {
         
         let isoFormatter = DateFormatter()
         isoFormatter.dateFormat = "yyyy-MM-dd"
         
         build.title = "Create Notes from " + isoFormatter.string(from: sender.dateValue)
+        tableView.reloadData()
     }
     
     override func viewDidLoad() {
@@ -41,7 +50,6 @@ class CalViewController: NSViewController {
         else {
             dateTagPrefix.stringValue = "work/date"
         }
-        let cal = BBCalendar()
         let calendars = cal.getCalendarList()
         calList.addItems(withObjectValues: calendars)
         if let calendarName = UserDefaults.standard.string(forKey: "calendarName") {
@@ -50,6 +58,10 @@ class CalViewController: NSViewController {
                 calList.stringValue = calendarName
             }
         }
+        
+        tableView.delegate = self
+        tableView.dataSource = self
+
     }
     
     @IBAction func calendarChanged(_ sender: NSComboBox) {
@@ -57,6 +69,7 @@ class CalViewController: NSViewController {
         let cal = BBCalendar()
         let appDelegate = NSApplication.shared.delegate as! AppDelegate
         appDelegate.statusItem.title = cal.currentEventTitle()
+        tableView.reloadData()
     }
     
     @IBAction func datePrefixChanged(_ sender: NSTextField) {
@@ -90,4 +103,35 @@ extension CalViewController {
         }
         return viewcontroller
     }
+}
+
+extension CalViewController: NSTableViewDataSource {
+    
+    func numberOfRows(in tableView: NSTableView) -> Int {
+        let events = cal.getEventsByDate(target: picker.dateValue)
+        bizcache = events.map { $0.title }
+        return bizcache.count
+    }
+    
+}
+
+extension CalViewController: NSTableViewDelegate {
+    
+    fileprivate enum CellIdentifiers {
+        static let EventCell = "EventCellID"
+    }
+    
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        
+        var cellIdentifier: String = ""
+        
+        cellIdentifier = CellIdentifiers.EventCell
+        
+        if let cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: cellIdentifier), owner: nil) as? NSTableCellView {
+            cell.textField?.stringValue = bizcache[row]
+            return cell
+        }
+        return nil
+    }
+    
 }
