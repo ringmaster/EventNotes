@@ -834,7 +834,7 @@
                                                     <font key="font" metaFont="system"/>
                                                     <tabViewItems>
                                                         <tabViewItem label="Index" identifier="" id="MOj-qd-Z5R">
-                                                            <view key="view" ambiguous="YES" id="6zl-vO-RwY">
+                                                            <view key="view" id="6zl-vO-RwY">
                                                                 <rect key="frame" x="32" y="7" width="370" height="190"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
@@ -853,7 +853,7 @@
                                                                                     <size key="minSize" width="333" height="154"/>
                                                                                     <size key="maxSize" width="463" height="10000000"/>
                                                                                     <attributedString key="textStorage">
-                                                                                        <fragment content="{{#events}} * {{titlelink}} @ {{start}} for {{duration}} {{/events}}">
+                                                                                        <fragment content="{{#events}} * {{link(title)}} @ {{start}} for {{duration}} {{/events}}">
                                                                                             <attributes>
                                                                                                 <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                                                                 <font key="NSFont" metaFont="smallSystem"/>
@@ -878,7 +878,7 @@
                                                             </view>
                                                         </tabViewItem>
                                                         <tabViewItem label="Event" identifier="" id="YNq-Ne-AVp">
-                                                            <view key="view" id="uv8-nz-ldD">
+                                                            <view key="view" ambiguous="YES" id="uv8-nz-ldD">
                                                                 <rect key="frame" x="32" y="7" width="370" height="190"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>

@@ -127,7 +127,12 @@ class BBCalendar {
             
             let result = o3name.capturedGroups(withRegex: "^(\\S)\\S+\\s(.+)$")
             
-            tags.append(self.getDefault(prefix: "o3TagPrefix", postfix: "/") + result[0].lowercased() + result[1].lowercased())
+            if(result.count>=2) {
+                tags.append(self.getDefault(prefix: "o3TagPrefix", postfix: "/") + result[0].lowercased() + result[1].lowercased())
+            }
+            else {
+                tags.append(self.getDefault(prefix: "o3TagPrefix", postfix: "/") + o3name)
+            }
         }
         
         return tags
