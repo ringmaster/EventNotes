@@ -88,6 +88,12 @@ class CalViewController: NSViewController {
     @IBAction func quitClicked(_ sender: NSButton) {
         NSApplication.shared.terminate(self)
     }
+    
+    func dateUpdate() {
+        if Date().timeIntervalSince(picker.dateValue) >= 86400 {
+            picker.dateValue = Date()
+        }
+    }
 }
 
 extension CalViewController {
@@ -135,3 +141,4 @@ extension CalViewController: NSTableViewDelegate {
     }
     
 }
+

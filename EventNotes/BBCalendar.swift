@@ -9,17 +9,17 @@
 import Foundation
 import Cocoa
 import EventKit
+import Mustache
 
 class BBCalendar {
-    
+    private let store = EKEventStore()
+
     public func getStore() -> EKEventStore? {
-        let store = EKEventStore()
-        
         if EKEventStore.authorizationStatus(for: .event) != EKAuthorizationStatus.authorized {
-            store.requestAccess(to: .event, completion: {granted, error in})
+            self.store.requestAccess(to: .event, completion: {granted, error in})
             return nil
         } else {
-            return store
+            return self.store
         }
     }
     
@@ -176,7 +176,7 @@ class BBCalendar {
         let attendees = event.attendees!
         let title = getEventTitle(event: event)
         let tags = getEventTags(event: event)
-        
+
         var body:String = "\n---\n> *Subject:* " + event.title
         body += "\n> *Start:* [" + formatter.string(from: event.startDate) + "](x-fantastical2://show/mini/" + isoFormatter.string(from: event.startDate) + ")"
         body += "\n> *End:* " + formatter.string(from: event.endDate)
@@ -203,12 +203,7 @@ class BBCalendar {
     }
     
     public func getEventsByDate(target: Date) -> [EKEvent] {
-        let store = EKEventStore()
-        
-        if EKEventStore.authorizationStatus(for: .event) != EKAuthorizationStatus.authorized {
-            store.requestAccess(to: .event, completion: {granted, error in})
-        } else {
-            
+        if let store = self.getStore() {
             let calendar = Calendar.current
             
             let today = calendar.startOfDay(for: target)

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.18"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -727,8 +727,8 @@
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <datePickerCell key="cell" borderStyle="bezel" alignment="left" datePickerStyle="clockAndCalendar" id="Gkk-6g-eke">
                                                         <font key="font" metaFont="system"/>
-                                                        <date key="date" timeIntervalSinceReferenceDate="558025200">
-                                                            <!--2018-09-07 15:00:00 +0000-->
+                                                        <date key="date" timeIntervalSinceReferenceDate="570384000">
+                                                            <!--2019-01-28 16:00:00 +0000-->
                                                         </date>
                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -809,17 +809,6 @@
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </tableHeaderView>
                                                 </scrollView>
-                                                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sdC-0j-xfw">
-                                                    <rect key="frame" x="51" y="10" width="81" height="32"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                    <buttonCell key="cell" type="push" title="Button" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="V3n-8m-ec9">
-                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                        <font key="font" metaFont="system"/>
-                                                        <connections>
-                                                            <action selector="update:" target="XfG-lQ-9wD" id="r0n-rB-IsX"/>
-                                                        </connections>
-                                                    </buttonCell>
-                                                </button>
                                             </subviews>
                                         </view>
                                     </tabViewItem>
@@ -834,7 +823,7 @@
                                                     <font key="font" metaFont="system"/>
                                                     <tabViewItems>
                                                         <tabViewItem label="Index" identifier="" id="MOj-qd-Z5R">
-                                                            <view key="view" id="6zl-vO-RwY">
+                                                            <view key="view" ambiguous="YES" id="6zl-vO-RwY">
                                                                 <rect key="frame" x="32" y="7" width="370" height="190"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
@@ -843,7 +832,7 @@
                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                         <clipView key="contentView" ambiguous="YES" drawsBackground="NO" id="1Ji-1o-qW8">
                                                                             <rect key="frame" x="1" y="1" width="333" height="154"/>
-                                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                            <autoresizingMask key="autoresizingMask"/>
                                                                             <subviews>
                                                                                 <textView ambiguous="YES" importsGraphics="NO" richText="NO" verticallyResizable="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" spellingCorrection="YES" smartInsertDelete="YES" id="uRm-Db-snc">
                                                                                     <rect key="frame" x="0.0" y="0.0" width="333" height="154"/>
@@ -878,7 +867,7 @@
                                                             </view>
                                                         </tabViewItem>
                                                         <tabViewItem label="Event" identifier="" id="YNq-Ne-AVp">
-                                                            <view key="view" ambiguous="YES" id="uv8-nz-ldD">
+                                                            <view key="view" id="uv8-nz-ldD">
                                                                 <rect key="frame" x="32" y="7" width="370" height="190"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
@@ -887,7 +876,7 @@
                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                         <clipView key="contentView" ambiguous="YES" drawsBackground="NO" id="7bH-C6-etl">
                                                                             <rect key="frame" x="1" y="1" width="333" height="154"/>
-                                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                            <autoresizingMask key="autoresizingMask"/>
                                                                             <subviews>
                                                                                 <textView ambiguous="YES" importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" spellingCorrection="YES" smartInsertDelete="YES" id="b8u-jm-4KT">
                                                                                     <rect key="frame" x="0.0" y="0.0" width="333" height="154"/>
