@@ -68,7 +68,7 @@ class BBCalendar {
         
     }
     
-    public func getEventTitle(event: EKEvent) -> String {
+    public func getEventTitle(event: EKEvent, returnDate: Bool = true) -> String {
         var title = event.title!
         
         let isoFormatter = DateFormatter()
@@ -88,7 +88,9 @@ class BBCalendar {
                 }
             }
 
-            title = title + " " + isoFormatter.string(from: event.startDate)
+            if returnDate {
+                title = title + " " + isoFormatter.string(from: event.startDate)
+            }
         }
         title = title.trimmingCharacters(in: .whitespacesAndNewlines)
         
@@ -148,14 +150,24 @@ class BBCalendar {
                 return $0.startDate < $1.startDate
             }
             let dateComponentsFormatter = DateComponentsFormatter()
-            dateComponentsFormatter.allowedUnits = [.year,.month,.weekOfMonth,.day,.hour,.minute,.second]
+            dateComponentsFormatter.allowedUnits = [.hour,.minute]
             //dateComponentsFormatter.maximumUnitCount = 2
-            dateComponentsFormatter.unitsStyle = .abbreviated
+            dateComponentsFormatter.unitsStyle = .positional
+            dateComponentsFormatter.zeroFormattingBehavior = .pad
 
-            
+            var nextup = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
+            let now = Date()
             for event:EKEvent in evts {
-                if event.startDate > Date() {
-                    return getEventTitle(event: event) + " in " + dateComponentsFormatter.string(from: Date(), to: event.startDate)!
+                if event.startDate! < now && event.endDate > now {
+                    nextup = event.endDate
+                }
+                if event.startDate! > now {
+                    if nextup < event.startDate! {
+                        return "Break in " + dateComponentsFormatter.string(from: now, to: nextup)! + " then " + getEventTitle(event: event, returnDate: false) + " in " + dateComponentsFormatter.string(from: nextup, to: event.startDate)!
+                    }
+                    else {
+                        return getEventTitle(event: event, returnDate: false) + " in " + dateComponentsFormatter.string(from: now, to: event.startDate)!
+                    }
                 }
             }
             return "No events left today"
@@ -176,24 +188,42 @@ class BBCalendar {
         let attendees = event.attendees!
         let title = getEventTitle(event: event)
         let tags = getEventTags(event: event)
+        
+        var templateText = "\n---\n> *Subject:* {{event.title}}"
+        templateText += "\n> *Start:* [{{start}}](x-fantastical2://show/mini/{{startiso}})"
+        templateText += "\n> *End:* {{end}}"
+        templateText += "\n> *Attendees:* {{attendeecount}}"
+        templateText += "\n> *Organizer:* {{organizer}}"
+        templateText += "{{#location}}\n> *Location:* {{location}}{{/location}}"
+        templateText += "\n> *Index:* [[⭐️ Summary - {{startiso}}]]"
+        templateText += "\n> *Event ID:* {{eventid}}"
+        templateText += "\n---\n{{notes}}\n---\n"
+        
+        do {
+            let template = try Template(string: templateText)
 
-        var body:String = "\n---\n> *Subject:* " + event.title
-        body += "\n> *Start:* [" + formatter.string(from: event.startDate) + "](x-fantastical2://show/mini/" + isoFormatter.string(from: event.startDate) + ")"
-        body += "\n> *End:* " + formatter.string(from: event.endDate)
-        body += "\n> *Attendees:* " + String(attendees.count)
-        body += "\n> *Organizer:* " + String(event.organizer!.name!)
-        if let location:String = event.location {
-            body += "\n> *Location:* " + location
+            let data = [
+                "event": event,
+                "title": event.title,
+                "start": formatter.string(from: event.startDate),
+                "startiso": isoFormatter.string(from: event.startDate),
+                "end": formatter.string(from: event.endDate),
+                "attendeecount": attendees.count,
+                "organizer": String(event.organizer!.name!),
+                "location": event.location ?? "",
+                "eventid": event.eventIdentifier,
+                "notes": event.notes ?? ""
+                ] as [String : Any]
+
+            var body:String = try template.render(data)
+            body = body.replace(pattern: "https?://\\S*bluejeans.com/(\\S+)", withTemplate: "bjnb://meet/id/$1")
+            
+            addNote(title: title, body: body, tags: tags)
         }
-        body += "\n> *Index:* [[⭐️ Summary - " + isoFormatter.string(from: event.startDate) + "]]"
-        body += "\n> *Event ID:* " + event.eventIdentifier
-        if let notes:String = event.notes {
-            body += "\n---\n" + notes + "\n---\n"
+        catch {
+            
         }
-        body = body.replace(pattern: "https?://\\S*bluejeans.com/(\\S+)", withTemplate: "bjnb://meet/id/$1")
-        
-        addNote(title: title, body: body, tags: tags)
-        
+
         return title
     }
     

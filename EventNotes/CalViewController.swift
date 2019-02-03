@@ -21,6 +21,7 @@ class CalViewController: NSViewController {
     @IBOutlet weak var o3TagPrefix: NSTextField!
     @IBOutlet weak var tableView: NSTableView!
     @IBOutlet weak var templates: NSTabViewItem!
+    @IBOutlet weak var eventTemplate: NSTextField!
     
     @IBAction func update(_ sender: NSButtonCell) {
         tableView.reloadData()
@@ -61,7 +62,6 @@ class CalViewController: NSViewController {
         
         tableView.delegate = self
         tableView.dataSource = self
-
     }
     
     @IBAction func calendarChanged(_ sender: NSComboBox) {
@@ -89,11 +89,16 @@ class CalViewController: NSViewController {
         NSApplication.shared.terminate(self)
     }
     
+    @IBAction func eventTemplateChange(_ sender: NSTextField) {
+        print(eventTemplate.stringValue);
+    }
+    
     func dateUpdate() {
         if Date().timeIntervalSince(picker.dateValue) >= 86400 {
             picker.dateValue = Date()
         }
     }
+    
 }
 
 extension CalViewController {
@@ -141,4 +146,3 @@ extension CalViewController: NSTableViewDelegate {
     }
     
 }
-

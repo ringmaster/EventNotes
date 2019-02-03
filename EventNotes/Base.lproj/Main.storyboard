@@ -796,11 +796,11 @@
                                                             </tableView>
                                                         </subviews>
                                                     </clipView>
-                                                    <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="50P-zJ-CB8">
+                                                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="50P-zJ-CB8">
                                                         <rect key="frame" x="1" y="119" width="238" height="15"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </scroller>
-                                                    <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="ONB-Je-mXy">
+                                                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="ONB-Je-mXy">
                                                         <rect key="frame" x="224" y="17" width="15" height="102"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </scroller>
@@ -823,7 +823,7 @@
                                                     <font key="font" metaFont="system"/>
                                                     <tabViewItems>
                                                         <tabViewItem label="Index" identifier="" id="MOj-qd-Z5R">
-                                                            <view key="view" ambiguous="YES" id="6zl-vO-RwY">
+                                                            <view key="view" id="6zl-vO-RwY">
                                                                 <rect key="frame" x="32" y="7" width="370" height="190"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
@@ -832,7 +832,7 @@
                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                         <clipView key="contentView" ambiguous="YES" drawsBackground="NO" id="1Ji-1o-qW8">
                                                                             <rect key="frame" x="1" y="1" width="333" height="154"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
+                                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                             <subviews>
                                                                                 <textView ambiguous="YES" importsGraphics="NO" richText="NO" verticallyResizable="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" spellingCorrection="YES" smartInsertDelete="YES" id="uRm-Db-snc">
                                                                                     <rect key="frame" x="0.0" y="0.0" width="333" height="154"/>
@@ -867,62 +867,22 @@
                                                             </view>
                                                         </tabViewItem>
                                                         <tabViewItem label="Event" identifier="" id="YNq-Ne-AVp">
-                                                            <view key="view" id="uv8-nz-ldD">
+                                                            <view key="view" ambiguous="YES" id="uv8-nz-ldD">
                                                                 <rect key="frame" x="32" y="7" width="370" height="190"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
-                                                                    <scrollView fixedFrame="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fTF-cp-dwR">
-                                                                        <rect key="frame" x="3" y="17" width="350" height="156"/>
-                                                                        <autoresizingMask key="autoresizingMask"/>
-                                                                        <clipView key="contentView" ambiguous="YES" drawsBackground="NO" id="7bH-C6-etl">
-                                                                            <rect key="frame" x="1" y="1" width="333" height="154"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                            <subviews>
-                                                                                <textView ambiguous="YES" importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" spellingCorrection="YES" smartInsertDelete="YES" id="b8u-jm-4KT">
-                                                                                    <rect key="frame" x="0.0" y="0.0" width="333" height="154"/>
-                                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                                                    <size key="minSize" width="333" height="154"/>
-                                                                                    <size key="maxSize" width="463" height="10000000"/>
-                                                                                    <attributedString key="textStorage">
-                                                                                        <fragment>
-                                                                                            <string key="content">---
-&gt; *Subject:* {{subject}}
-&gt; *Start:* {{startlink}}
-&gt; *End:* {{end}}
-&gt; *Attendees:* {{attendee count}}
-&gt; *Organizer:* {{organizer}}
-&gt; *Location:* {{location}}
-&gt; *Index:* {{summarylink}}
-</string>
-                                                                                            <attributes>
-                                                                                                <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                                                                <font key="NSFont" metaFont="smallSystem"/>
-                                                                                                <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                                                                            </attributes>
-                                                                                        </fragment>
-                                                                                        <fragment content="&gt; *Event ID:* {{eventid}}">
-                                                                                            <attributes>
-                                                                                                <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                                                                <font key="NSFont" metaFont="smallSystem"/>
-                                                                                                <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                                                                            </attributes>
-                                                                                        </fragment>
-                                                                                    </attributedString>
-                                                                                    <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                                                </textView>
-                                                                            </subviews>
-                                                                        </clipView>
-                                                                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="VeK-q8-MIh">
-                                                                            <rect key="frame" x="-100" y="-100" width="87" height="18"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                        </scroller>
-                                                                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="JnQ-la-ISt">
-                                                                            <rect key="frame" x="334" y="1" width="15" height="154"/>
-                                                                            <autoresizingMask key="autoresizingMask"/>
-                                                                        </scroller>
-                                                                    </scrollView>
+                                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="omY-jz-d3t">
+                                                                        <rect key="frame" x="-4" y="-3" width="377" height="196"/>
+                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                        <textFieldCell key="cell" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="GPH-GF-LFB">
+                                                                            <font key="font" metaFont="system"/>
+                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                        </textFieldCell>
+                                                                        <connections>
+                                                                            <action selector="eventTemplateChange:" target="XfG-lQ-9wD" id="d5z-N7-OBn"/>
+                                                                        </connections>
+                                                                    </textField>
                                                                 </subviews>
                                                             </view>
                                                         </tabViewItem>
@@ -1030,6 +990,7 @@
                         <outlet property="build" destination="cJx-Tn-t6I" id="Gfx-3u-bh2"/>
                         <outlet property="calList" destination="tNf-ZX-YaG" id="TVt-SQ-YgP"/>
                         <outlet property="dateTagPrefix" destination="29q-c1-p34" id="w9l-iJ-uO6"/>
+                        <outlet property="eventTemplate" destination="omY-jz-d3t" id="baq-VH-BO2"/>
                         <outlet property="o3TagPrefix" destination="lkI-20-rlH" id="OA0-1b-1UV"/>
                         <outlet property="picker" destination="wHR-5O-3fd" id="SSu-jV-pct"/>
                         <outlet property="tableView" destination="qXA-ff-q5k" id="f6g-qv-Qmq"/>

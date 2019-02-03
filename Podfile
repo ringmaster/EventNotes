@@ -11,5 +11,5 @@ target 'EventNotes' do
   # Pods for EventNotes
 
   pod 'CallbackURLKit'
-  pod 'GRMustache.swift'
+  pod 'GRMustache.swift', :git => 'https://github.com/clutter/GRMustache.swift.git'
 end

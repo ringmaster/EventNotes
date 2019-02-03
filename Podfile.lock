@@ -1,22 +1,30 @@
 PODS:
-  - CallbackURLKit (2.0.0):
-    - CallbackURLKit/Core (= 2.0.0)
-  - CallbackURLKit/Core (2.0.0)
+  - CallbackURLKit (2.2.0):
+    - CallbackURLKit/Core (= 2.2.0)
+  - CallbackURLKit/Core (2.2.0)
   - GRMustache.swift (2.0.0)
 
 DEPENDENCIES:
   - CallbackURLKit
-  - GRMustache.swift
+  - GRMustache.swift (from `https://github.com/clutter/GRMustache.swift.git`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - CallbackURLKit
-    - GRMustache.swift
+
+EXTERNAL SOURCES:
+  GRMustache.swift:
+    :git: https://github.com/clutter/GRMustache.swift.git
+
+CHECKOUT OPTIONS:
+  GRMustache.swift:
+    :commit: 39b862df8ecdee7bd4e064fb4852e7a09803a94b
+    :git: https://github.com/clutter/GRMustache.swift.git
 
 SPEC CHECKSUMS:
-  CallbackURLKit: eebcf4ecbb70dc8c970f9fcf1ff70162c5ea0965
-  GRMustache.swift: 8a547c12bea16052071b2b540af83d770075f0eb
+  CallbackURLKit: 63d4ce4c79a0344179d7d5fd9c38175b732b8a6f
+  GRMustache.swift: 53405b02c374520f9193cf41bfa677f03a6d70aa
 
-PODFILE CHECKSUM: 2942b72184c3bb588fb3b0c6c0d798f275f8fda2
+PODFILE CHECKSUM: af69ae3b44860b2d7412b76cb503e04b92e3d00b
 
 COCOAPODS: 1.5.3
