@@ -17,7 +17,7 @@ class BBCalendar {
     public func getStore() -> EKEventStore? {
         if EKEventStore.authorizationStatus(for: .event) != EKAuthorizationStatus.authorized {
             self.store.requestAccess(to: .event, completion: {granted, error in})
-            return nil
+            return self.store
         } else {
             return self.store
         }
@@ -174,6 +174,59 @@ class BBCalendar {
         }
     }
     
+    public func callbackCreateEvent(id:String, date:Date) {
+        if let store = self.getStore() {
+            store.requestAccess(to: .event, completion: {granted, error in})
+
+            let events = getEventsByDate(target: date)
+            
+            for event:EKEvent in events {
+                if event.eventIdentifier == id {
+                    _ = noteFromEvent(event: event)
+                }
+            }
+        }
+    }
+    
+    public func upsertNoteFromEvent(event:EKEvent)->String {
+        let title = getEventTitle(event: event)
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.formatterBehavior = .behavior10_4
+        formatter.dateStyle = DateFormatter.Style.short
+        
+        var cback = URLComponents()
+        cback.scheme = "eventnotes"
+        cback.host = "x-callback-url"
+        cback.path = "/create"
+        cback.queryItems = [
+            URLQueryItem(name: "id", value: event.eventIdentifier),
+            URLQueryItem(name: "date", value: formatter.string(from: event.startDate))
+        ]
+    
+        var urlComponents = URLComponents()
+        urlComponents.scheme = "bear"
+        urlComponents.host = "x-callback-url"
+        urlComponents.path = "/open-note"
+        urlComponents.queryItems = [
+            URLQueryItem(name: "title", value: title),
+            URLQueryItem(name: "show_window", value: "no"),
+            URLQueryItem(name: "exclude_trashed", value: "yes"),
+            URLQueryItem(name: "x-error", value: cback.url?.absoluteString)
+        ]
+    
+        let url = urlComponents.url
+        if let url:URL = url, NSWorkspace.shared.open(url){
+            print("Opened the browser to " + url.absoluteString)
+        }
+        else {
+            print("Couldn't open: " + urlComponents.url!.absoluteString)
+        }
+
+        return title
+    }
+    
     public func noteFromEvent(event:EKEvent)->String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm"
@@ -189,7 +242,7 @@ class BBCalendar {
         let title = getEventTitle(event: event)
         let tags = getEventTags(event: event)
         
-        var templateText = "\n---\n> *Subject:* {{event.title}}"
+        var templateText = "\n---\n> *Subject:* {{title}}"
         templateText += "\n> *Start:* [{{start}}](x-fantastical2://show/mini/{{startiso}})"
         templateText += "\n> *End:* {{end}}"
         templateText += "\n> *Attendees:* {{attendeecount}}"
@@ -292,12 +345,13 @@ class BBCalendar {
             
             if event.hasAttendees {
                 
-                let title = noteFromEvent(event: event)
+                let title = upsertNoteFromEvent(event: event)
                 
                 index.append("* [[" + title + "]] @ " + timeFormatter.string(from: event.startDate) + " for " + dateComponentsFormatter.string(from: event.startDate, to: event.endDate)!)
             }
         }
         
+        // Add some kind of internal store to be able to send a key to bear to callback with, then lookup the note to create
         addNote(title: indexTitle, body: index.joined(separator: "\n"), tags: ["deleteme", self.getDefault(prefix: "dateTagPrefix", postfix: "/") + slashFormatter.string(from: Calendar.current.startOfDay(for: target)), self.getDefault(prefix: "dateTagPrefix", postfix: "/") + "summary"], show: true)
     }
     

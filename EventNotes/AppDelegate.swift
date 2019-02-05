@@ -16,8 +16,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     let popover = NSPopover()
     var eventMonitor: EventMonitor?
+    let cal = BBCalendar()
 
-    
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         /*
@@ -25,11 +25,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
          icon?.isTemplate = true // best for dark mode
          statusItem.image = icon
          */
-        let cal = BBCalendar()
         self.statusItem.title = cal.currentEventTitle()
         
         Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) {_ in
-            self.statusItem.title = cal.currentEventTitle()
+            self.statusItem.title = self.cal.currentEventTitle()
         }
         
         if let button = statusItem.button {
@@ -45,11 +44,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         
         let manager = Manager.shared
-        manager.registerToURLEvent()
         manager.callbackURLScheme = Manager.urlSchemes?.first
-        
-        CallbackURLKit.register(action: "test") { (parameters, success, failure, cancel) in
+        manager.registerToURLEvent()
+
+        CallbackURLKit.register(action: "test") { parameters, success, failure, cancel in
             print("Success?")
+            success(nil)
+        }
+        CallbackURLKit.register(action: "create") { parameters, success, failure, cancel in
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd"
+            formatter.formatterBehavior = .behavior10_4
+            formatter.dateStyle = DateFormatter.Style.short
+
+            print("CREATING EVENT " + parameters["id"]! + " FROM CALLBACK")
+            self.cal.callbackCreateEvent(id: parameters["id"]!, date: formatter.date(from: parameters["date"]!)!)
+            success(nil)
+        }
+        CallbackURLKit.register(action: "today") { parameters, success, failure, cancel in
+            self.cal.buildToday()
             success(nil)
         }
     }
