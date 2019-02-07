@@ -140,6 +140,45 @@ class BBCalendar {
         return tags
     }
     
+    public func bluejeansRoom()->String? {
+        if let current:EKEvent = currentEvent() {
+            
+            if let location:String = current.location {
+            
+                let locationRoom = location.capturedGroups(withRegex: "bluejeans.com/([\\d/]+)")
+                if locationRoom.count > 0 {
+                    return locationRoom[0]
+                }
+            }
+            let descriptionRoom = current.description.capturedGroups(withRegex: "bluejeans.com/([\\d/]+)")
+            if descriptionRoom.count > 0 {
+                return descriptionRoom[0]
+            }
+        }
+        return nil
+    }
+    
+    public func currentEvent()->EKEvent? {
+        var evts = getEventsByDate(target: Date())
+        if(evts.count == 0) {
+            return nil
+        }
+        else {
+            evts.sort {
+                return $0.startDate < $1.startDate
+            }
+            
+            var nextup = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
+            let now = Date()
+            for event:EKEvent in evts {
+                if event.startDate! < now && event.endDate > now {
+                    return event
+                }
+            }
+            return nil
+        }
+    }
+    
     public func currentEventTitle()->String {
         var evts = getEventsByDate(target: Date())
         if(evts.count == 0) {
@@ -283,6 +322,14 @@ class BBCalendar {
     public func buildToday() {
         let calendar = Calendar.current
         self.build(target: calendar.startOfDay(for: Date()))
+    }
+    
+    public func buildTomorrow() {
+        let calendar = Calendar.current
+        let tomorrowComponents = DateComponents(day: 1)
+        let today = calendar.startOfDay(for: Date())
+        let tomorrow = calendar.date(byAdding: tomorrowComponents, to: today)!
+        self.build(target: calendar.startOfDay(for: tomorrow))
     }
     
     public func getEventsByDate(target: Date) -> [EKEvent] {

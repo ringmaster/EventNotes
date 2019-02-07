@@ -700,7 +700,7 @@
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cJx-Tn-t6I">
-                                                    <rect key="frame" x="177" y="10" width="246" height="32"/>
+                                                    <rect key="frame" x="177" y="4" width="252" height="32"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                                     <buttonCell key="cell" type="push" title="Create Notes from Today's Events" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Qh9-E2-Mas">
                                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -710,42 +710,15 @@
                                                         </connections>
                                                     </buttonCell>
                                                 </button>
-                                                <datePicker verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4th-6s-K9l">
-                                                    <rect key="frame" x="33" y="136" width="96" height="27"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                    <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="goy-yL-ciC">
-                                                        <font key="font" metaFont="system"/>
-                                                        <date key="date" timeIntervalSinceReferenceDate="-595929600">
-                                                            <!--1982-02-12 16:00:00 +0000-->
-                                                        </date>
-                                                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    </datePickerCell>
-                                                </datePicker>
-                                                <datePicker verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wHR-5O-3fd">
-                                                    <rect key="frame" x="10" y="46" width="139" height="148"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                    <datePickerCell key="cell" borderStyle="bezel" alignment="left" datePickerStyle="clockAndCalendar" id="Gkk-6g-eke">
-                                                        <font key="font" metaFont="system"/>
-                                                        <date key="date" timeIntervalSinceReferenceDate="570384000">
-                                                            <!--2019-01-28 16:00:00 +0000-->
-                                                        </date>
-                                                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    </datePickerCell>
-                                                    <connections>
-                                                        <action selector="pickerChange:" target="XfG-lQ-9wD" id="Isv-Yg-dv0"/>
-                                                    </connections>
-                                                </datePicker>
                                                 <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jm2-5V-Z7X">
-                                                    <rect key="frame" x="183" y="59" width="240" height="135"/>
+                                                    <rect key="frame" x="183" y="46" width="240" height="148"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <clipView key="contentView" ambiguous="YES" id="5mM-yY-2uJ">
-                                                        <rect key="frame" x="1" y="0.0" width="238" height="134"/>
+                                                        <rect key="frame" x="1" y="0.0" width="238" height="147"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="none" columnReordering="NO" columnSelection="YES" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="BJD-dk-W5I" viewBased="YES" id="qXA-ff-q5k">
-                                                                <rect key="frame" x="0.0" y="0.0" width="238" height="111"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="238" height="124"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -809,6 +782,32 @@
                                                         <autoresizingMask key="autoresizingMask"/>
                                                     </tableHeaderView>
                                                 </scrollView>
+                                                <datePicker verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wHR-5O-3fd">
+                                                    <rect key="frame" x="11" y="46" width="139" height="148"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <datePickerCell key="cell" borderStyle="bezel" alignment="left" datePickerStyle="clockAndCalendar" id="Gkk-6g-eke">
+                                                        <font key="font" metaFont="system"/>
+                                                        <date key="date" timeIntervalSinceReferenceDate="570384000">
+                                                            <!--2019-01-28 16:00:00 +0000-->
+                                                        </date>
+                                                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                    </datePickerCell>
+                                                    <connections>
+                                                        <action selector="pickerChange:" target="XfG-lQ-9wD" id="Isv-Yg-dv0"/>
+                                                    </connections>
+                                                </datePicker>
+                                                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KLU-0r-I9L">
+                                                    <rect key="frame" x="5" y="4" width="151" height="32"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <buttonCell key="cell" type="push" title="Join Meeting" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="fkV-sk-mcM">
+                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                    <connections>
+                                                        <action selector="joinClicked:" target="XfG-lQ-9wD" id="iEU-D7-myb"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                         </view>
                                     </tabViewItem>
@@ -823,7 +822,7 @@
                                                     <font key="font" metaFont="system"/>
                                                     <tabViewItems>
                                                         <tabViewItem label="Index" identifier="" id="MOj-qd-Z5R">
-                                                            <view key="view" id="6zl-vO-RwY">
+                                                            <view key="view" ambiguous="YES" id="6zl-vO-RwY">
                                                                 <rect key="frame" x="32" y="7" width="370" height="190"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
@@ -832,7 +831,7 @@
                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                         <clipView key="contentView" ambiguous="YES" drawsBackground="NO" id="1Ji-1o-qW8">
                                                                             <rect key="frame" x="1" y="1" width="333" height="154"/>
-                                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                            <autoresizingMask key="autoresizingMask"/>
                                                                             <subviews>
                                                                                 <textView ambiguous="YES" importsGraphics="NO" richText="NO" verticallyResizable="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" spellingCorrection="YES" smartInsertDelete="YES" id="uRm-Db-snc">
                                                                                     <rect key="frame" x="0.0" y="0.0" width="333" height="154"/>
@@ -867,7 +866,7 @@
                                                             </view>
                                                         </tabViewItem>
                                                         <tabViewItem label="Event" identifier="" id="YNq-Ne-AVp">
-                                                            <view key="view" ambiguous="YES" id="uv8-nz-ldD">
+                                                            <view key="view" id="uv8-nz-ldD">
                                                                 <rect key="frame" x="32" y="7" width="370" height="190"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <subviews>
@@ -991,6 +990,7 @@
                         <outlet property="calList" destination="tNf-ZX-YaG" id="TVt-SQ-YgP"/>
                         <outlet property="dateTagPrefix" destination="29q-c1-p34" id="w9l-iJ-uO6"/>
                         <outlet property="eventTemplate" destination="omY-jz-d3t" id="baq-VH-BO2"/>
+                        <outlet property="join" destination="KLU-0r-I9L" id="O36-eS-1XZ"/>
                         <outlet property="o3TagPrefix" destination="lkI-20-rlH" id="OA0-1b-1UV"/>
                         <outlet property="picker" destination="wHR-5O-3fd" id="SSu-jV-pct"/>
                         <outlet property="tableView" destination="qXA-ff-q5k" id="f6g-qv-Qmq"/>

@@ -27,15 +27,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
          */
         self.statusItem.title = cal.currentEventTitle()
         
-        Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) {_ in
-            self.statusItem.title = self.cal.currentEventTitle()
-        }
-        
         if let button = statusItem.button {
             button.action = #selector(togglePopover(_:))
         }
         
         popover.contentViewController = CalViewController.freshController()
+        Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) {_ in
+            self.statusItem.title = self.cal.currentEventTitle()
+            if let ctlr = self.popover.contentViewController as? CalViewController {
+                ctlr.join.title = "Join " + self.statusItem.title!
+            }
+        }
+        
         
         eventMonitor = EventMonitor(mask: [.leftMouseDown, .rightMouseDown]) { [weak self] event in
             if let strongSelf = self, strongSelf.popover.isShown {
@@ -65,7 +68,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self.cal.buildToday()
             success(nil)
         }
-    }
+        CallbackURLKit.register(action: "tomorrow") { parameters, success, failure, cancel in
+            self.cal.buildTomorrow()
+            success(nil)
+        }
+        
+   }
     
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application

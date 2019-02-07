@@ -15,6 +15,7 @@ class CalViewController: NSViewController {
 
     @IBOutlet weak var picker: NSDatePicker!
     @IBOutlet weak var build: NSButton!
+    @IBOutlet weak var join: NSButton!
     
     @IBOutlet weak var calList: NSComboBox!
     @IBOutlet weak var dateTagPrefix: NSTextField!
@@ -91,6 +92,24 @@ class CalViewController: NSViewController {
     
     @IBAction func eventTemplateChange(_ sender: NSTextField) {
         print(eventTemplate.stringValue);
+    }
+    @IBAction func joinClicked(_ sender: NSButton) {
+        let cal = BBCalendar()
+        if let bjRoom:String = cal.bluejeansRoom() {
+            print("BlueJeans room: " + bjRoom)
+            var urlComponents = URLComponents()
+            urlComponents.scheme = "bjnb"
+            urlComponents.host = "meet"
+            urlComponents.path = "/id/" + bjRoom
+            
+            let url = urlComponents.url
+            if let url:URL = url, NSWorkspace.shared.open(url){
+                print("Opened the browser to " + url.absoluteString)
+            }
+            else {
+                print("Couldn't open: " + urlComponents.url!.absoluteString)
+            }
+        }
     }
     
     func dateUpdate() {
