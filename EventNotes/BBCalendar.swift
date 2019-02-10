@@ -186,6 +186,20 @@ class BBCalendar {
         }
     }
     
+    public func nextEvent()->EKEvent? {
+        var evts = getEventsByDate(target: Date())
+        evts.sort {
+            return $0.startDate < $1.startDate
+        }
+        let now = Date()
+        for event:EKEvent in evts {
+            if event.startDate! > now {
+                return event
+            }
+        }
+        return nil
+    }
+    
     public func currentEventTitle()->String {
         var evts = getEventsByDate(target: Date())
         if(evts.count == 0) {

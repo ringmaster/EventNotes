@@ -11,8 +11,9 @@ import EventKit
 
 let cal = BBCalendar()
 var bizcache = [String]()
+var nextEvent: EKEvent?
 
-class CalViewController: NSViewController {
+class CalViewController: NSViewController, NSUserNotificationCenterDelegate {
 
     @IBOutlet weak var picker: NSDatePicker!
     @IBOutlet weak var build: NSButton!
@@ -70,6 +71,8 @@ class CalViewController: NSViewController {
             self.updateStatus()
         }
         self.updateStatus()
+
+        NSUserNotificationCenter.default.delegate = self
     }
     
     func updateStatus() {
@@ -87,6 +90,49 @@ class CalViewController: NSViewController {
             join.title = "No Current Meeting"
             join.isEnabled = false
         }
+        if let newEvent:EKEvent = cal.nextEvent() {
+            if nextEvent == nil || nextEvent!.eventIdentifier != newEvent.eventIdentifier {
+                nextEvent = cal.nextEvent()
+                
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy-MM-dd HH:mm"
+                
+                let notification = NSUserNotification()
+                notification.identifier = nextEvent!.eventIdentifier
+                notification.title = nextEvent!.title
+                notification.subtitle = formatter.string(from: nextEvent!.startDate)
+                // notification.informativeText = "This is a test"
+                // notification.soundName = NSUserNotificationDefaultSoundName
+                // notification.contentImage = NSImage(contentsOfURL: NSURL(string: "https://placehold.it/300")!)
+                notification.hasActionButton = true
+                notification.actionButtonTitle = "Join"
+                
+                // Manually display the notification
+                let notificationCenter = NSUserNotificationCenter.default
+                //notificationCenter.deliver(notification)
+                
+                var dayComp = DateComponents()
+                dayComp.minute = -4
+                let date = Calendar.current.date(byAdding: dayComp, to: nextEvent!.startDate)
+                
+                notification.deliveryDate = date
+                notificationCenter.scheduleNotification(notification)
+            }
+        }
+    }
+    
+    func userNotificationCenter(_ center: NSUserNotificationCenter, didActivate notification: NSUserNotification) {
+        switch (notification.activationType) {
+        case .actionButtonClicked:
+            joinMeeting()
+            break;
+        default:
+            break;
+        }
+    }
+    
+    func userNotificationCenter(_ center: NSUserNotificationCenter, shouldPresent notification: NSUserNotification) -> Bool {
+        return true
     }
     
     @IBAction func calendarChanged(_ sender: NSComboBox) {
@@ -118,7 +164,10 @@ class CalViewController: NSViewController {
         print(eventTemplate.stringValue);
     }
     @IBAction func joinClicked(_ sender: NSButton) {
-        let cal = BBCalendar()
+        joinMeeting()
+    }
+    
+    func joinMeeting() {
         if let bjRoom:String = cal.bluejeansRoom() {
             print("BlueJeans room: " + bjRoom)
             var urlComponents = URLComponents()
