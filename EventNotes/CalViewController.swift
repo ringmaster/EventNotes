@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import EventKit
 
 let cal = BBCalendar()
 var bizcache = [String]()
@@ -34,6 +35,7 @@ class CalViewController: NSViewController {
         
         build.title = "Create Notes from " + isoFormatter.string(from: sender.dateValue)
         tableView.reloadData()
+        self.updateStatus()
     }
     
     override func viewDidLoad() {
@@ -63,6 +65,28 @@ class CalViewController: NSViewController {
         
         tableView.delegate = self
         tableView.dataSource = self
+        
+        Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) {_ in
+            self.updateStatus()
+        }
+        self.updateStatus()
+    }
+    
+    func updateStatus() {
+        if let current:EKEvent = cal.currentEvent() {
+            if cal.bluejeansRoom() != nil {
+                join.title = "Join " + current.title!
+                join.isEnabled = true
+            }
+            else {
+                join.title = "Note for " + current.title!
+                join.isEnabled = true
+            }
+        }
+        else {
+            join.title = "No Current Meeting"
+            join.isEnabled = false
+        }
     }
     
     @IBAction func calendarChanged(_ sender: NSComboBox) {
@@ -108,6 +132,25 @@ class CalViewController: NSViewController {
             }
             else {
                 print("Couldn't open: " + urlComponents.url!.absoluteString)
+            }
+        }
+        else {
+            if let title:String = cal.currentMeetingNoteName() {
+                var urlComponents = URLComponents()
+                urlComponents.scheme = "bear"
+                urlComponents.host = "x-callback-url"
+                urlComponents.path = "/open-note/"
+                urlComponents.queryItems = [
+                    URLQueryItem(name: "title", value: title)
+                ]
+                
+                let url = urlComponents.url
+                if let url:URL = url, NSWorkspace.shared.open(url){
+                    print("Opened the browser to " + url.absoluteString)
+                }
+                else {
+                    print("Couldn't open: " + urlComponents.url!.absoluteString)
+                }
             }
         }
     }

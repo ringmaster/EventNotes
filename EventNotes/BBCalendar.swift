@@ -145,12 +145,13 @@ class BBCalendar {
             
             if let location:String = current.location {
             
-                let locationRoom = location.capturedGroups(withRegex: "bluejeans.com/([\\d/]+)")
+                let locationRoom = location.capturedGroups(withRegex: "bluejeans.com/(\\d+)")
                 if locationRoom.count > 0 {
                     return locationRoom[0]
                 }
             }
-            let descriptionRoom = current.description.capturedGroups(withRegex: "bluejeans.com/([\\d/]+)")
+            let desc = current.notes ?? ""
+            let descriptionRoom = desc.capturedGroups(withRegex: "bluejeans.com/(\\d+)")
             if descriptionRoom.count > 0 {
                 return descriptionRoom[0]
             }
@@ -158,7 +159,14 @@ class BBCalendar {
         return nil
     }
     
-    public func currentEvent()->EKEvent? {
+    public func currentMeetingNoteName()->String? {
+        if let current:EKEvent = currentEvent() {
+            return getEventTitle(event: current)
+        }
+        return nil
+    }
+    
+    public func currentEvent(minutesOffset:NSInteger = 10)->EKEvent? {
         var evts = getEventsByDate(target: Date())
         if(evts.count == 0) {
             return nil
@@ -168,8 +176,7 @@ class BBCalendar {
                 return $0.startDate < $1.startDate
             }
             
-            var nextup = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
-            let now = Date()
+            let now = Calendar.current.date(byAdding: .minute, value: minutesOffset, to: Date())!
             for event:EKEvent in evts {
                 if event.startDate! < now && event.endDate > now {
                     return event

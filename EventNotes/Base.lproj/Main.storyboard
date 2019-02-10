@@ -798,9 +798,9 @@
                                                     </connections>
                                                 </datePicker>
                                                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KLU-0r-I9L">
-                                                    <rect key="frame" x="5" y="4" width="151" height="32"/>
+                                                    <rect key="frame" x="1" y="4" width="160" height="32"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                    <buttonCell key="cell" type="push" title="Join Meeting" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="fkV-sk-mcM">
+                                                    <buttonCell key="cell" type="push" title="No Current Meeting" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="fkV-sk-mcM">
                                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                         <font key="font" metaFont="system"/>
                                                     </buttonCell>
