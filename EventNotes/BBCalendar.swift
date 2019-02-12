@@ -140,8 +140,8 @@ class BBCalendar {
         return tags
     }
     
-    public func bluejeansRoom()->String? {
-        if let current:EKEvent = currentEvent() {
+    public func bluejeansRoom(event:EKEvent? = nil)->String? {
+        if let current:EKEvent = (event ?? currentEvent()) {
             
             if let location:String = current.location {
             
@@ -305,15 +305,27 @@ class BBCalendar {
         var templateText = "\n---\n> *Subject:* {{title}}"
         templateText += "\n> *Start:* [{{start}}](x-fantastical2://show/mini/{{startiso}})"
         templateText += "\n> *End:* {{end}}"
-        templateText += "\n> *Attendees:* {{attendeecount}}"
-        templateText += "\n> *Organizer:* {{organizer}}"
+        //templateText += "\n> *Attendees:* {{attendeecount}}"
         templateText += "{{#location}}\n> *Location:* {{location}}{{/location}}"
         templateText += "\n> *Index:* [[⭐️ Summary - {{startiso}}]]"
+        templateText += "\n> *Organizer:* {{organizer}}"
+        templateText += "\n> *Attendees:* {{attendeecount}}\n{{#attendees}}{{#link}}  [{{name}}]({{link}}){{/link}}{{^link}}  {{name}}{{/link}}{{/attendees}}"
         templateText += "\n> *Event ID:* {{eventid}}"
         templateText += "\n---\n{{notes}}\n---\n"
         
         do {
             let template = try Template(string: templateText)
+            
+            let attendeeData = attendees.map {
+                let attendee:EKParticipant = $0
+                var link:String? = nil
+                let email = attendee.url.absoluteString
+                let cmmuser = email.capturedGroups(withRegex: "([^:]+)@covermymeds.com")
+                if cmmuser.count > 0 {
+                    link = "https://teamdirectory.covermymeds.com/members/" + cmmuser[0].lowercased()
+                }
+                return ["name": attendee.name, "link": link]
+            } as [[String: String?]]
 
             let data = [
                 "event": event,
@@ -322,6 +334,7 @@ class BBCalendar {
                 "startiso": isoFormatter.string(from: event.startDate),
                 "end": formatter.string(from: event.endDate),
                 "attendeecount": attendees.count,
+                "attendees": attendeeData,
                 "organizer": String(event.organizer!.name!),
                 "location": event.location ?? "",
                 "eventid": event.eventIdentifier,

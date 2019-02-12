@@ -92,7 +92,7 @@ class CalViewController: NSViewController, NSUserNotificationCenterDelegate {
         }
         if let newEvent:EKEvent = cal.nextEvent() {
             if nextEvent == nil || nextEvent!.eventIdentifier != newEvent.eventIdentifier {
-                nextEvent = cal.nextEvent()
+                nextEvent = newEvent
                 
                 let formatter = DateFormatter()
                 formatter.dateFormat = "yyyy-MM-dd HH:mm"
@@ -105,7 +105,12 @@ class CalViewController: NSViewController, NSUserNotificationCenterDelegate {
                 // notification.soundName = NSUserNotificationDefaultSoundName
                 // notification.contentImage = NSImage(contentsOfURL: NSURL(string: "https://placehold.it/300")!)
                 notification.hasActionButton = true
-                notification.actionButtonTitle = "Join"
+                if let _:String = cal.bluejeansRoom(event: nextEvent) {
+                    notification.actionButtonTitle = "Join"
+                }
+                else {
+                    notification.actionButtonTitle = "Read"
+                }
                 
                 // Manually display the notification
                 let notificationCenter = NSUserNotificationCenter.default
