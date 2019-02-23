@@ -242,13 +242,13 @@ class BBCalendar {
             
             for event:EKEvent in events {
                 if event.eventIdentifier == id {
-                    _ = noteFromEvent(event: event)
+                    noteFromEvent(event: event)
                 }
             }
         }
     }
     
-    public func upsertNoteFromEvent(event:EKEvent)->String {
+    public func upsertNoteFromEvent(event:EKEvent) {
         let title = getEventTitle(event: event)
         
         let formatter = DateFormatter()
@@ -283,11 +283,85 @@ class BBCalendar {
         else {
             print("Couldn't open: " + urlComponents.url!.absoluteString)
         }
-
-        return title
     }
     
-    public func noteFromEvent(event:EKEvent)->String {
+    public func getSummaryTitle(target: Date)-> String {
+        let isoFormatter = DateFormatter()
+        isoFormatter.dateFormat = "yyyy-MM-dd"
+
+        return "⭐️ Summary - " + isoFormatter.string(from: Calendar.current.startOfDay(for: target))
+    }
+    
+    public func upsertSummary(target:Date) {
+        let title = getSummaryTitle(target: target)
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.formatterBehavior = .behavior10_4
+        formatter.dateStyle = DateFormatter.Style.short
+        
+        var cback = URLComponents()
+        cback.scheme = "eventnotes"
+        cback.host = "x-callback-url"
+        cback.path = "/summary"
+        cback.queryItems = [
+            URLQueryItem(name: "date", value: formatter.string(from: target))
+        ]
+        
+        var urlComponents = URLComponents()
+        urlComponents.scheme = "bear"
+        urlComponents.host = "x-callback-url"
+        urlComponents.path = "/open-note"
+        urlComponents.queryItems = [
+            URLQueryItem(name: "title", value: title),
+            URLQueryItem(name: "show_window", value: "no"),
+            URLQueryItem(name: "exclude_trashed", value: "yes"),
+            URLQueryItem(name: "x-error", value: cback.url?.absoluteString)
+        ]
+        
+        let url = urlComponents.url
+        if let url:URL = url, NSWorkspace.shared.open(url){
+            print("Opened the browser to " + url.absoluteString)
+        }
+        else {
+            print("Couldn't open: " + urlComponents.url!.absoluteString)
+        }
+    }
+    
+    public func summaryFromDate(target:Date) {
+        let slashFormatter = DateFormatter()
+        slashFormatter.dateFormat = "yyyy/MM/dd"
+        
+        let timeFormatter = DateFormatter()
+        timeFormatter.dateFormat = "h:mma"
+        
+        let dateComponentsFormatter = DateComponentsFormatter()
+        dateComponentsFormatter.allowedUnits = [.year,.month,.weekOfMonth,.day,.hour,.minute,.second]
+        dateComponentsFormatter.unitsStyle = .abbreviated
+        
+        var evts = getEventsByDate(target: target)
+        
+        var index:[String] = []
+        let indexTitle = getSummaryTitle(target: target)
+        
+        evts.sort {
+            return $0.startDate < $1.startDate
+        }
+        
+        for event in evts {
+            if event.hasAttendees {
+                index.append("* [[" + getEventTitle(event: event) + "]] @ " + timeFormatter.string(from: event.startDate) + " for " + dateComponentsFormatter.string(from: event.startDate, to: event.endDate)!)
+            }
+        }
+        
+        var body = "### Schedule\n"
+        body += index.joined(separator: "\n")
+        body += "\n---\n"
+        
+        addNote(title: indexTitle, body: body, tags: ["deleteme", self.getDefault(prefix: "dateTagPrefix", postfix: "/") + slashFormatter.string(from: Calendar.current.startOfDay(for: target)), self.getDefault(prefix: "dateTagPrefix", postfix: "/") + "summary"], show: true)
+    }
+    
+    public func noteFromEvent(event:EKEvent) {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm"
         
@@ -349,8 +423,6 @@ class BBCalendar {
         catch {
             
         }
-
-        return title
     }
     
     public func buildToday() {
@@ -394,29 +466,8 @@ class BBCalendar {
     }
     
     public func build(target:Date) {
-        
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm"
-        
-        let isoFormatter = DateFormatter()
-        isoFormatter.dateFormat = "yyyy-MM-dd"
-
-        let slashFormatter = DateFormatter()
-        slashFormatter.dateFormat = "yyyy/MM/dd"
-        
-        let timeFormatter = DateFormatter()
-        timeFormatter.dateFormat = "h:mma"
-        
-        let dateComponentsFormatter = DateComponentsFormatter()
-        dateComponentsFormatter.allowedUnits = [.year,.month,.weekOfMonth,.day,.hour,.minute,.second]
-        //dateComponentsFormatter.maximumUnitCount = 2
-        dateComponentsFormatter.unitsStyle = .abbreviated
-
         var evts = getEventsByDate(target: target)
         
-        var index:[String] = []
-        let indexTitle = "⭐️ Summary - " + isoFormatter.string(from: Calendar.current.startOfDay(for: target))
-                
         evts.sort {
             return $0.startDate < $1.startDate
         }
@@ -425,15 +476,11 @@ class BBCalendar {
             print(event.title)
             
             if event.hasAttendees {
-                
-                let title = upsertNoteFromEvent(event: event)
-                
-                index.append("* [[" + title + "]] @ " + timeFormatter.string(from: event.startDate) + " for " + dateComponentsFormatter.string(from: event.startDate, to: event.endDate)!)
+                upsertNoteFromEvent(event: event)
             }
         }
         
-        // Add some kind of internal store to be able to send a key to bear to callback with, then lookup the note to create
-        addNote(title: indexTitle, body: index.joined(separator: "\n"), tags: ["deleteme", self.getDefault(prefix: "dateTagPrefix", postfix: "/") + slashFormatter.string(from: Calendar.current.startOfDay(for: target)), self.getDefault(prefix: "dateTagPrefix", postfix: "/") + "summary"], show: true)
+        upsertSummary(target: target)
     }
     
     

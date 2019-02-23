@@ -72,7 +72,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self.cal.buildTomorrow()
             success(nil)
         }
-        
+        CallbackURLKit.register(action: "summary") { parameters, success, failure, cancel in
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd"
+            formatter.formatterBehavior = .behavior10_4
+            formatter.dateStyle = DateFormatter.Style.short
+            
+            print("CREATING SUMMARY " + parameters["date"]! + " FROM CALLBACK")
+            self.cal.summaryFromDate(target: formatter.date(from: parameters["date"]!)!)
+            success(nil)
+        }
+
     }
     
     func updateStatus() {
