@@ -164,7 +164,7 @@ class DayView : NSView {
         for otherDate in dates {
             if ((event.startDate >= otherDate.startDate && otherDate.endDate > event.startDate)
                 || (event.startDate < otherDate.startDate && otherDate.startDate < event.endDate))
-                && otherDate !== event {
+                && otherDate !== event && !otherDate.isAllDay {
                 // other date overlaps with this date
                 if afterCurrentDate {
                     overlappingEventsAfter += 1
@@ -207,14 +207,25 @@ class DayView : NSView {
             //print the box to represent the date
             //let path = CGPath(roundedRect: rect, cornerWidth: radius, cornerHeight: radius, transform: nil)
             var path = CGPath(rect: rect, transform: nil)
-            context.setFillColor(NSColor(red: 0.8274509803921568, green: 0.5764705882352941, blue: 0.8941176470588236, alpha: 0.5).cgColor)
+            var color = NSColor(red: 0.7843137254901961, green: 0.4745098039215686, blue: 0.8666666666666667, alpha: 1.0)
+            // Check for 1:1s
+            if let attendees:[EKParticipant] = date.attendees {
+                if attendees.count == 1 {
+                   color = NSColor(red: 0.3411764705882353, green: 0.7019607843137254, blue: 0.29411764705882354, alpha: 1.0)
+                }
+            }
+            if date.status == .tentative {
+                color = NSColor(red: 0.34, green: 0.34, blue: 0.34, alpha: 1.0)
+            }
+            
+            context.setFillColor(color.withAlphaComponent(0.5).cgColor)
             context.beginPath()
             context.addPath(path)
             context.fillPath()
             
             //draw the line on the left side of the box
             context.beginPath()
-            context.setFillColor(NSColor(red: 0.5137254901960784, green: 0.23529411764705882, blue: 0.6392156862745098, alpha: 1.0).cgColor)
+            context.setFillColor(color.cgColor)
             rect = NSRect(x: startX, y: startY, width: 2, height: endY - startY + 2)
             path = CGPath(rect: rect, transform: nil)
             context.addPath(path)
@@ -234,10 +245,18 @@ class DayView : NSView {
             let titleOrigin = NSPoint(x: startX + lineWidth + margin, y: endY - margin)
             let textSize = NSSize(width: (endX - startX) - lineWidth, height: startY - endY)
             let titleRect = NSRect(origin: titleOrigin, size: textSize)
-            let titleAttributes = [
-                NSAttributedStringKey.font : NSFont.boldSystemFont(ofSize: 10),
+            var titleAttributes: [NSAttributedString.Key : Any]? = [
+                NSAttributedStringKey.font : NSFont.systemFont(ofSize: 10),
                 NSAttributedStringKey.foregroundColor: NSColor.black
             ]
+            if let organizer:EKParticipant = date.organizer {
+                if organizer.isCurrentUser {
+                    titleAttributes = [
+                        NSAttributedStringKey.font : NSFont.boldSystemFont(ofSize: 10),
+                        NSAttributedStringKey.foregroundColor: NSColor.black
+                    ]
+                }
+            }
             
             //draw the title
             let title = NSString(string: date.title)
