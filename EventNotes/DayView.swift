@@ -8,6 +8,7 @@
 
 import Foundation
 import AppKit
+import EventKit
 
 class CalendarDate {
     public let begin: Date
@@ -28,7 +29,7 @@ class CalendarDate {
 }
 
 protocol DayViewDelegate {
-    func dayView(_: DayView, didReceiveClickForDate date: CalendarDate)
+    func dayView(_: DayView, didReceiveClickForDate date: EKEvent)
 }
 
 class DayView : NSView {
@@ -41,7 +42,7 @@ class DayView : NSView {
     static let NOW_LINE_COLOR = NSColor.red
     static let COLORS = [NSColor.red, NSColor.blue, NSColor.orange, NSColor.green, NSColor.magenta]
     
-    private var dates: [CalendarDate] = []
+    private var dates: [EKEvent] = []
     public var delegate: DayViewDelegate?
     
     required init?(coder: NSCoder) {
@@ -49,8 +50,8 @@ class DayView : NSView {
         self.frame = NSRect(x: self.frame.minX, y: self.frame.minY, width: self.frame.width, height: DayView.SCROLL_HEIGHT)
     }
     
-    func setDates(newDates: [CalendarDate]){
-        self.dates = newDates.sorted(by: {$0.begin < $1.begin})
+    func setDates(newDates: [EKEvent]){
+        self.dates = newDates.sorted(by: {$0.startDate < $1.startDate})
         self.needsDisplay = true
     }
     
@@ -59,6 +60,14 @@ class DayView : NSView {
         let currentTimeHeight = getPosition(for: Date())
         let center = NSPoint(x: 0, y:currentTimeHeight - scrollView.frame.height / 2)
         scrollView.contentView.scroll(center)
+    }
+    
+    func civilianTime(hour: Int)->Int {
+        let newHour = hour % 12
+        if newHour == 0 {
+            return 12
+        }
+        return newHour
     }
     
     override func draw(_ dirtyRect: NSRect) {
@@ -80,7 +89,7 @@ class DayView : NSView {
             
             //check if the current time label would interfere with this hour label
             if(abs(verticalCenter - currentTimeLine) > 20){
-                let labelText : NSString = NSString(format: "%02d:00", hour)
+                let labelText : NSString = NSString(format: "%2d:00", civilianTime(hour: hour))
                 drawLabel(in: context, text: labelText, timePosition: verticalCenter, color: DayView.BACKGROUND_COLOR)
             }
             
@@ -91,7 +100,7 @@ class DayView : NSView {
         drawDates(in: context, dates: self.dates)
         
         //draw the label for the current time
-        let labelText : NSString = NSString(format: "%02d:%02d", nowHour, nowMinute)
+        let labelText : NSString = NSString(format: "%02d:%02d", civilianTime(hour: nowHour), nowMinute)
         drawLabel(in: context, text: labelText, timePosition: currentTimeLine, color: DayView.NOW_LINE_COLOR)
         
         //draw the line for the current time
@@ -138,7 +147,7 @@ class DayView : NSView {
             startPoint.x -= 10
         }
         
-        context.setLineWidth(1.0)
+        context.setLineWidth(0.5)
         context.setStrokeColor(color.cgColor)
         
         //draw a line for every hour
@@ -148,13 +157,13 @@ class DayView : NSView {
         context.strokePath()
     }
     
-    func checkOverlappingEvents(for event: CalendarDate) -> (Int, Int){
+    func checkOverlappingEvents(for event: EKEvent) -> (Int, Int){
         var afterCurrentDate = false
         var overlappingEventsBefore = 0
         var overlappingEventsAfter = 0
         for otherDate in dates {
-            if ((event.begin >= otherDate.begin && otherDate.end > event.begin)
-                || (event.begin < otherDate.begin && otherDate.begin <= event.end))
+            if ((event.startDate >= otherDate.startDate && otherDate.endDate > event.startDate)
+                || (event.startDate < otherDate.startDate && otherDate.startDate < event.endDate))
                 && otherDate !== event {
                 // other date overlaps with this date
                 if afterCurrentDate {
@@ -173,14 +182,13 @@ class DayView : NSView {
         return (overlappingEventsBefore, overlappingEventsAfter)
     }
     
-    func drawDates(in context: CGContext, dates: [CalendarDate]){
+    func drawDates(in context: CGContext, dates: [EKEvent]){
         
         for date in dates {
             
             //check if there are multiple dates on this start time
             let (overlappingEventsBefore, overlappingEventsAfter) = checkOverlappingEvents(for: date)
             
-            let radius : CGFloat = 5
             let lineWidth = CGFloat(8)
             let margin = CGFloat(3)
             
@@ -190,22 +198,28 @@ class DayView : NSView {
             
             let startX : CGFloat = DayView.LABEL_SIZE.width + (eventWidth * CGFloat(overlappingEventsBefore))
             let endX : CGFloat = startX + eventWidth
-            let startY : CGFloat = getPosition(for: date.begin)
-            let endY : CGFloat = getPosition(for: date.end)
+            let startY : CGFloat = getPosition(for: date.startDate)
+            let endY : CGFloat = getPosition(for: date.endDate)
             
             
-            let rect = NSRect(x: startX, y: startY, width: endX - startX, height: endY - startY)
+            var rect = NSRect(x: startX, y: startY, width: endX - startX, height: endY - startY + 2)
             
             //print the box to represent the date
-            let path = CGPath(roundedRect: rect, cornerWidth: radius, cornerHeight: radius, transform: nil)
-            context.setFillColor(date.color.withAlphaComponent(0.4).cgColor)
+            //let path = CGPath(roundedRect: rect, cornerWidth: radius, cornerHeight: radius, transform: nil)
+            var path = CGPath(rect: rect, transform: nil)
+            context.setFillColor(NSColor(red: 0.8274509803921568, green: 0.5764705882352941, blue: 0.8941176470588236, alpha: 0.5).cgColor)
             context.beginPath()
             context.addPath(path)
             context.fillPath()
             
             //draw the line on the left side of the box
-            context.setFillColor(date.color.withAlphaComponent(0.8).cgColor)
             context.beginPath()
+            context.setFillColor(NSColor(red: 0.5137254901960784, green: 0.23529411764705882, blue: 0.6392156862745098, alpha: 1.0).cgColor)
+            rect = NSRect(x: startX, y: startY, width: 2, height: endY - startY + 2)
+            path = CGPath(rect: rect, transform: nil)
+            context.addPath(path)
+            context.fillPath()
+            /*
             context.move(to: CGPoint(x: startX, y: startY - radius))
             context.addArc(tangent1End: CGPoint(x: startX, y: startY), tangent2End: CGPoint(x: startX + radius, y: startY), radius: radius)
             context.addLine(to: CGPoint(x: startX + lineWidth, y: startY))
@@ -214,13 +228,14 @@ class DayView : NSView {
             context.addArc(tangent1End: CGPoint(x: startX, y: endY), tangent2End: CGPoint(x: startX, y: startY - radius), radius: radius)
             context.addLine(to: CGPoint(x: startX, y: startY - radius))
             context.fillPath()
+            */
             
             //draw the text information
             let titleOrigin = NSPoint(x: startX + lineWidth + margin, y: endY - margin)
             let textSize = NSSize(width: (endX - startX) - lineWidth, height: startY - endY)
             let titleRect = NSRect(origin: titleOrigin, size: textSize)
             let titleAttributes = [
-                NSAttributedStringKey.font : NSFont.boldSystemFont(ofSize: 12),
+                NSAttributedStringKey.font : NSFont.boldSystemFont(ofSize: 10),
                 NSAttributedStringKey.foregroundColor: NSColor.black
             ]
             
@@ -233,10 +248,10 @@ class DayView : NSView {
             let placeOrigin = NSPoint(x: startX + lineWidth + margin, y: endY - margin - titleBounds.height)
             let placeRect = NSRect(origin: placeOrigin, size: textSize)
             let placeAttributes = [
-                NSAttributedStringKey.font : NSFont.controlContentFont(ofSize: 10),
+                NSAttributedStringKey.font : NSFont.controlContentFont(ofSize: 8),
                 NSAttributedStringKey.foregroundColor: NSColor.black
             ]
-            let place = NSString(string: date.place)
+            let place = NSString(string: date.location ?? "")
             place.draw(in: placeRect, withAttributes: placeAttributes)
         }
     }
@@ -248,8 +263,8 @@ class DayView : NSView {
         let clickX = event.locationInWindow.x + scrollview.contentView.visibleRect.minX - windowMargin
         
         for date in dates {
-            let startHeight = getPosition(for: date.begin)
-            let endHeight = getPosition(for: date.end)
+            let startHeight = getPosition(for: date.startDate)
+            let endHeight = getPosition(for: date.endDate)
             
             //check if there are multiple dates on this start time
             let (overlappingEventsBefore, overlappingEventsAfter) = checkOverlappingEvents(for: date)

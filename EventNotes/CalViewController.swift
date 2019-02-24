@@ -121,10 +121,7 @@ class CalViewController: NSViewController, NSUserNotificationCenterDelegate {
         appDelegate.statusItem.title = cal.currentEventTitle()
         
         let events = cal.getEventsByDate(target: picker.dateValue)
-        let dayViewDates = events.map{
-            CalendarDate(with: $0.eventIdentifier, from: $0.startDate, to: $0.endDate, title: $0.title, place: $0.location ?? "", color: NSColor.init(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.5))
-        }
-        self.dayView.setDates(newDates: dayViewDates)
+        self.dayView.setDates(newDates: events)
     }
     
     func userNotificationCenter(_ center: NSUserNotificationCenter, didActivate notification: NSUserNotification) {
