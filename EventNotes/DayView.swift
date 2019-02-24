@@ -100,7 +100,7 @@ class DayView : NSView {
         drawDates(in: context, dates: self.dates)
         
         //draw the label for the current time
-        let labelText : NSString = NSString(format: "%02d:%02d", civilianTime(hour: nowHour), nowMinute)
+        let labelText : NSString = NSString(format: "%2d:%02d", civilianTime(hour: nowHour), nowMinute)
         drawLabel(in: context, text: labelText, timePosition: currentTimeLine, color: DayView.NOW_LINE_COLOR)
         
         //draw the line for the current time

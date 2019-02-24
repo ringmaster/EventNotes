@@ -24,6 +24,11 @@ class CalViewController: NSViewController, NSUserNotificationCenterDelegate {
     @IBOutlet weak var o3TagPrefix: NSTextField!
     @IBOutlet weak var dayView: DayView!
     
+    lazy var sheetViewController: NSViewController = {
+        return self.storyboard!.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "SheetViewController"))
+            as! NSViewController
+    }()
+    
     @IBAction func pickerChange(_ sender: NSDatePicker) {
         
         let isoFormatter = DateFormatter()
@@ -38,26 +43,6 @@ class CalViewController: NSViewController, NSUserNotificationCenterDelegate {
         super.viewDidLoad()
         
         picker.dateValue = Date()
-        if let prefix = UserDefaults.standard.string(forKey: "o3TagPrefix") {
-            o3TagPrefix.stringValue = prefix
-        }
-        else {
-            o3TagPrefix.stringValue = "work/O3"
-        }
-        if let prefix = UserDefaults.standard.string(forKey: "dateTagPrefix") {
-            dateTagPrefix.stringValue = prefix
-        }
-        else {
-            dateTagPrefix.stringValue = "work/date"
-        }
-        let calendars = cal.getCalendarList()
-        calList.addItems(withObjectValues: calendars)
-        if let calendarName = UserDefaults.standard.string(forKey: "calendarName") {
-            if let calindex = calendars.index(of: calendarName) {
-                calList.selectItem(at: calindex)
-                calList.stringValue = calendarName
-            }
-        }
         
         Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) {_ in
             self.updateStatus()
@@ -65,6 +50,10 @@ class CalViewController: NSViewController, NSUserNotificationCenterDelegate {
         self.updateStatus()
 
         NSUserNotificationCenter.default.delegate = self
+    }
+    
+    override func viewWillDisappear() {
+        self.dismiss(sheetViewController)
     }
     
     func updateStatus() {
@@ -167,6 +156,10 @@ class CalViewController: NSViewController, NSUserNotificationCenterDelegate {
     
     @IBAction func joinClicked(_ sender: NSButton) {
         joinMeeting()
+    }
+    
+    @IBAction func settingsClicked(_ sender: Any) {
+        self.presentViewControllerAsSheet(sheetViewController)
     }
     
     func joinMeeting() {
