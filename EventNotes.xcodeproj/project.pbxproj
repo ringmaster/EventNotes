@@ -17,6 +17,7 @@
 		55495DAC21449E400016A5C4 /* EventMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55495DAB21449E400016A5C4 /* EventMonitor.swift */; };
 		55495DAE2145A9100016A5C4 /* EventNote.icns in Resources */ = {isa = PBXBuildFile; fileRef = 55495DAD2145A9100016A5C4 /* EventNote.icns */; };
 		55495DB02145A91B0016A5C4 /* icon_512x512.png in Resources */ = {isa = PBXBuildFile; fileRef = 55495DAF2145A91B0016A5C4 /* icon_512x512.png */; };
+		555F89112222150900C56C5B /* DayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555F89102222150900C56C5B /* DayView.swift */; };
 		CC6B93BB32CD4A42BF409502 /* Pods_EventNotes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8305C6E77085D881B6F5D66 /* Pods_EventNotes.framework */; };
 /* End PBXBuildFile section */
 
@@ -35,6 +36,7 @@
 		55495DAB21449E400016A5C4 /* EventMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventMonitor.swift; sourceTree = "<group>"; };
 		55495DAD2145A9100016A5C4 /* EventNote.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = EventNote.icns; sourceTree = "<group>"; };
 		55495DAF2145A91B0016A5C4 /* icon_512x512.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_512x512.png; sourceTree = "<group>"; };
+		555F89102222150900C56C5B /* DayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayView.swift; sourceTree = "<group>"; };
 		E8305C6E77085D881B6F5D66 /* Pods_EventNotes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EventNotes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F73B39D7732A1320C87E9CFB /* Pods-EventNotes.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EventNotes.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EventNotes/Pods-EventNotes.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -93,6 +95,7 @@
 				552AD02B213DC59200C9AB19 /* EventNotes.entitlements */,
 				552AD033213DC72B00C9AB19 /* BBCalendar.swift */,
 				55495DAB21449E400016A5C4 /* EventMonitor.swift */,
+				555F89102222150900C56C5B /* DayView.swift */,
 			);
 			path = EventNotes;
 			sourceTree = "<group>";
@@ -228,6 +231,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				555F89112222150900C56C5B /* DayView.swift in Sources */,
 				552AD024213DC59100C9AB19 /* ViewController.swift in Sources */,
 				552AD034213DC72B00C9AB19 /* BBCalendar.swift in Sources */,
 				552AD032213DC64300C9AB19 /* CalViewController.swift in Sources */,

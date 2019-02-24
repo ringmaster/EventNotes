@@ -22,20 +22,15 @@ class CalViewController: NSViewController, NSUserNotificationCenterDelegate {
     @IBOutlet weak var calList: NSComboBox!
     @IBOutlet weak var dateTagPrefix: NSTextField!
     @IBOutlet weak var o3TagPrefix: NSTextField!
-    @IBOutlet weak var tableView: NSTableView!
-    @IBOutlet weak var templates: NSTabViewItem!
-    @IBOutlet weak var eventTemplate: NSTextField!
+    @IBOutlet weak var dayView: DayView!
     
-    @IBAction func update(_ sender: NSButtonCell) {
-        tableView.reloadData()
-    }
     @IBAction func pickerChange(_ sender: NSDatePicker) {
         
         let isoFormatter = DateFormatter()
         isoFormatter.dateFormat = "yyyy-MM-dd"
         
         build.title = "Create Notes from " + isoFormatter.string(from: sender.dateValue)
-        tableView.reloadData()
+        
         self.updateStatus()
     }
     
@@ -63,9 +58,6 @@ class CalViewController: NSViewController, NSUserNotificationCenterDelegate {
                 calList.stringValue = calendarName
             }
         }
-        
-        tableView.delegate = self
-        tableView.dataSource = self
         
         Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) {_ in
             self.updateStatus()
@@ -124,6 +116,15 @@ class CalViewController: NSViewController, NSUserNotificationCenterDelegate {
                 notificationCenter.scheduleNotification(notification)
             }
         }
+        
+        let appDelegate = NSApplication.shared.delegate as! AppDelegate
+        appDelegate.statusItem.title = cal.currentEventTitle()
+        
+        let events = cal.getEventsByDate(target: picker.dateValue)
+        let dayViewDates = events.map{
+            CalendarDate(with: $0.eventIdentifier, from: $0.startDate, to: $0.endDate, title: $0.title, place: $0.location ?? "", color: NSColor.init(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.5))
+        }
+        self.dayView.setDates(newDates: dayViewDates)
     }
     
     func userNotificationCenter(_ center: NSUserNotificationCenter, didActivate notification: NSUserNotification) {
@@ -142,10 +143,7 @@ class CalViewController: NSViewController, NSUserNotificationCenterDelegate {
     
     @IBAction func calendarChanged(_ sender: NSComboBox) {
         UserDefaults.standard.set(sender.stringValue, forKey: "calendarName")
-        let cal = BBCalendar()
-        let appDelegate = NSApplication.shared.delegate as! AppDelegate
-        appDelegate.statusItem.title = cal.currentEventTitle()
-        tableView.reloadData()
+        self.updateStatus()
     }
     
     @IBAction func datePrefixChanged(_ sender: NSTextField) {
@@ -156,18 +154,20 @@ class CalViewController: NSViewController, NSUserNotificationCenterDelegate {
         UserDefaults.standard.set(sender.stringValue, forKey: "o3TagPrefix")
     }
     
-    @IBAction func buildClicked(_ sender: NSButtonCell) {
-        let cal = BBCalendar()
+    @IBAction func buildClicked(_ sender: Any) {
         cal.build(target: picker.dateValue)
     }
     
-    @IBAction func quitClicked(_ sender: NSButton) {
+    @IBAction func buildTodayClicked(_ sender: Any) {
+        cal.buildToday()
+    }
+    @IBAction func buildTomorrowClicked(_ sender: Any) {
+        cal.buildTomorrow()
+    }
+    @IBAction func quitClicked(_ sender: Any) {
         NSApplication.shared.terminate(self)
     }
     
-    @IBAction func eventTemplateChange(_ sender: NSTextField) {
-        print(eventTemplate.stringValue);
-    }
     @IBAction func joinClicked(_ sender: NSButton) {
         joinMeeting()
     }
@@ -232,33 +232,3 @@ extension CalViewController {
     }
 }
 
-extension CalViewController: NSTableViewDataSource {
-    
-    func numberOfRows(in tableView: NSTableView) -> Int {
-        let events = cal.getEventsByDate(target: picker.dateValue)
-        bizcache = events.map { $0.title }
-        return bizcache.count
-    }
-    
-}
-
-extension CalViewController: NSTableViewDelegate {
-    
-    fileprivate enum CellIdentifiers {
-        static let EventCell = "EventCellID"
-    }
-    
-    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        
-        var cellIdentifier: String = ""
-        
-        cellIdentifier = CellIdentifiers.EventCell
-        
-        if let cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: cellIdentifier), owner: nil) as? NSTableCellView {
-            cell.textField?.stringValue = bizcache[row]
-            return cell
-        }
-        return nil
-    }
-    
-}
