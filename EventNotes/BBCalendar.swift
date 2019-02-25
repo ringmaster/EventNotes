@@ -114,7 +114,7 @@ class BBCalendar {
     public func getEventTags(event: EKEvent) -> [String] {
         let slashFormatter = DateFormatter()
         slashFormatter.dateFormat = "yyyy/MM/dd"
-        let attendees = event.attendees!
+        let attendees = event.attendees ?? []
         
         var tags = ["deleteme", self.getDefault(prefix: "dateTagPrefix", postfix: "/") + slashFormatter.string(from: event.startDate)]
         
@@ -372,7 +372,7 @@ class BBCalendar {
         let isoFormatter = DateFormatter()
         isoFormatter.dateFormat = "yyyy-MM-dd"
         
-        let attendees = event.attendees!
+        let attendees = event.attendees ?? []
         let title = getEventTitle(event: event)
         let tags = getEventTags(event: event)
         
@@ -384,7 +384,7 @@ class BBCalendar {
         templateText += "\n> *Index:* [[⭐️ Summary - {{startiso}}]]"
         templateText += "\n> *Organizer:* {{organizer}}"
         templateText += "\n> *Attendees:* {{attendeecount}}\n{{#attendees}}{{#link}}  [{{name}}]({{link}}){{/link}}{{^link}}  {{name}}{{/link}}{{/attendees}}"
-        templateText += "\n> *Event ID:* {{eventid}}"
+        templateText += "\n> *Event ID:* {{eventid}} #zozo/foo/bar"
         templateText += "\n---\n{{notes}}\n---\n"
         
         do {
@@ -400,6 +400,11 @@ class BBCalendar {
                 }
                 return ["name": attendee.name, "link": link]
             } as [[String: String?]]
+            
+            var organizerName = ""
+            if let oragnizer = event.organizer {
+                organizerName = oragnizer.name ?? ""
+            }
 
             let data = [
                 "event": event,
@@ -409,7 +414,7 @@ class BBCalendar {
                 "end": formatter.string(from: event.endDate),
                 "attendeecount": attendees.count,
                 "attendees": attendeeData,
-                "organizer": String(event.organizer!.name!),
+                "organizer": organizerName,
                 "location": event.location ?? "",
                 "eventid": event.eventIdentifier,
                 "notes": event.notes ?? ""

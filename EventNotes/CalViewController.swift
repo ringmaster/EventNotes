@@ -13,7 +13,7 @@ let cal = BBCalendar()
 var bizcache = [String]()
 var nextEvent: EKEvent?
 
-class CalViewController: NSViewController, NSUserNotificationCenterDelegate {
+class CalViewController: NSViewController, NSUserNotificationCenterDelegate, DayViewDelegate {
 
     @IBOutlet weak var picker: NSDatePicker!
     @IBOutlet weak var build: NSButton!
@@ -43,6 +43,7 @@ class CalViewController: NSViewController, NSUserNotificationCenterDelegate {
         super.viewDidLoad()
         
         picker.dateValue = Date()
+        dayView.delegate = self
         
         Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) {_ in
             self.updateStatus()
@@ -50,6 +51,8 @@ class CalViewController: NSViewController, NSUserNotificationCenterDelegate {
         self.updateStatus()
 
         NSUserNotificationCenter.default.delegate = self
+        
+        self.view.window?.acceptsMouseMovedEvents = true
     }
     
     override func viewWillDisappear() {
@@ -203,6 +206,14 @@ class CalViewController: NSViewController, NSUserNotificationCenterDelegate {
         if Date().timeIntervalSince(picker.dateValue) >= 86400 {
             picker.dateValue = Date()
         }
+    }
+    
+    /**************************************
+     DayViewDelegate
+     **************************************/
+    
+    func dayView(_: DayView, didReceiveClickForDate date: EKEvent) {
+        cal.upsertNoteFromEvent(event: date)
     }
     
 }

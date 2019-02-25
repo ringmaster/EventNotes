@@ -53,6 +53,27 @@ class DayView : NSView {
     func setDates(newDates: [EKEvent]){
         self.dates = newDates.sorted(by: {$0.startDate < $1.startDate})
         self.needsDisplay = true
+        
+        self.discardCursorRects()
+        for date in dates {
+            
+            //check if there are multiple dates on this start time
+            let (overlappingEventsBefore, overlappingEventsAfter) = checkOverlappingEvents(for: date)
+            
+            
+            //calculate the width so there is enough space for all overlapping events
+            let maxWidth: CGFloat = self.frame.width - DayView.LABEL_SIZE.width
+            let eventWidth = maxWidth / CGFloat(overlappingEventsBefore + overlappingEventsAfter + 1)
+            
+            let startX : CGFloat = DayView.LABEL_SIZE.width + (eventWidth * CGFloat(overlappingEventsBefore))
+            let endX : CGFloat = startX + eventWidth
+            let startY : CGFloat = getPosition(for: date.startDate)
+            let endY : CGFloat = getPosition(for: date.endDate)
+            
+            let rect = NSRect(x: startX, y: startY, width: endX - startX, height: endY - startY + 2)
+
+            self.addCursorRect(rect, cursor: .pointingHand)
+        }
     }
     
     func scrollToNow(){
@@ -202,7 +223,7 @@ class DayView : NSView {
             let endY : CGFloat = getPosition(for: date.endDate)
             
             
-            var rect = NSRect(x: startX, y: startY, width: endX - startX, height: endY - startY + 2)
+            let rect = NSRect(x: startX, y: startY, width: endX - startX, height: endY - startY + 2)
             
             //print the box to represent the date
             //let path = CGPath(roundedRect: rect, cornerWidth: radius, cornerHeight: radius, transform: nil)
@@ -226,8 +247,8 @@ class DayView : NSView {
             //draw the line on the left side of the box
             context.beginPath()
             context.setFillColor(color.cgColor)
-            rect = NSRect(x: startX, y: startY, width: 2, height: endY - startY + 2)
-            path = CGPath(rect: rect, transform: nil)
+            let rect2 = NSRect(x: startX, y: startY, width: 2, height: endY - startY + 2)
+            path = CGPath(rect: rect2, transform: nil)
             context.addPath(path)
             context.fillPath()
             /*
@@ -260,6 +281,7 @@ class DayView : NSView {
             
             //draw the title
             let title = NSString(string: date.title)
+            //let title = NSString(string: rect.debugDescription)
             title.draw(in: titleRect, withAttributes: titleAttributes)
             let titleBounds = title.boundingRect(with: textSize, options: .usesLineFragmentOrigin,  attributes: titleAttributes)
             
@@ -301,5 +323,9 @@ class DayView : NSView {
                 self.delegate?.dayView(self, didReceiveClickForDate: date)
             }
         }
+    }
+    
+    override func mouseMoved(with event: NSEvent) {
+        print((NSString(format: "%.2f", event.locationInWindow.x) as String) + "," + (NSString(format: "%.2f", event.locationInWindow.y) as String))
     }
 }

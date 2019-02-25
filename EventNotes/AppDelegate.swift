@@ -82,7 +82,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self.cal.summaryFromDate(target: formatter.date(from: parameters["date"]!)!)
             success(nil)
         }
-
     }
     
     func updateStatus() {
