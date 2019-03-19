@@ -44,6 +44,7 @@ class DayView : NSView {
     
     private var dates: [EKEvent] = []
     public var delegate: DayViewDelegate?
+    public var drawTimeLine: Bool = true
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -96,6 +97,7 @@ class DayView : NSView {
         
         //calculate the current time for the red line
         let now = Date()
+
         let currentTimeLine = getPosition(for: now)
         let (nowHour, nowMinute) = getTime(for: now)
         
@@ -121,8 +123,10 @@ class DayView : NSView {
         drawDates(in: context, dates: self.dates)
         
         //draw the label for the current time
-        let labelText : NSString = NSString(format: "%2d:%02d", civilianTime(hour: nowHour), nowMinute)
-        drawLabel(in: context, text: labelText, timePosition: currentTimeLine, color: DayView.NOW_LINE_COLOR)
+        if self.drawTimeLine {
+            let labelText : NSString = NSString(format: "%2d:%02d", civilianTime(hour: nowHour), nowMinute)
+            drawLabel(in: context, text: labelText, timePosition: currentTimeLine, color: DayView.NOW_LINE_COLOR)
+        }
         
         //draw the line for the current time
         drawLine(in: context, timePosition: currentTimeLine, color: DayView.NOW_LINE_COLOR)
@@ -230,14 +234,20 @@ class DayView : NSView {
             var path = CGPath(rect: rect, transform: nil)
             var color = NSColor(red: 0.7843137254901961, green: 0.4745098039215686, blue: 0.8666666666666667, alpha: 1.0)
             // Check for 1:1s
-            if let attendees:[EKParticipant] = date.attendees {
-                if attendees.count == 1 {
-                   color = NSColor(red: 0.3411764705882353, green: 0.7019607843137254, blue: 0.29411764705882354, alpha: 1.0)
+            if date.hasAttendees {
+                if date.attendees!.count == 1 {
+                    color = NSColor(red: 0.3411764705882353, green: 0.7019607843137254, blue: 0.29411764705882354, alpha: 1.0)
+                }
+                for attendee:EKParticipant in date.attendees! {
+                    if attendee.isCurrentUser && attendee.participantStatus == EKParticipantStatus.tentative {
+                        color = NSColor(red: 0.9529411792755127, green: 0.886274516582489, blue: 0.9686274528503418, alpha: 1.0)
+                    }
                 }
             }
-            if date.status == .tentative {
-                color = NSColor(red: 0.34, green: 0.34, blue: 0.34, alpha: 1.0)
+            else {
+                color = NSColor(red: 0.75, green: 0.75, blue: 0.75, alpha: 1.0)
             }
+
             
             context.setFillColor(color.withAlphaComponent(0.5).cgColor)
             context.beginPath()
