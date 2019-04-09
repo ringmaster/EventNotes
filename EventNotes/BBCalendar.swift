@@ -17,10 +17,15 @@ class BBCalendar {
     public func getStore() -> EKEventStore? {
         if EKEventStore.authorizationStatus(for: .event) != EKAuthorizationStatus.authorized {
             self.store.requestAccess(to: .event, completion: {granted, error in})
+            NotificationCenter.default.addObserver(self, selector: #selector(self.updateStore), name: .EKEventStoreChanged, object: self.store)
             return self.store
         } else {
             return self.store
         }
+    }
+    
+    @objc private func updateStore() {
+        self.store.refreshSourcesIfNecessary()
     }
     
     func getCalendar(name:String, store:EKEventStore) -> EKCalendar?{
@@ -384,7 +389,7 @@ class BBCalendar {
         templateText += "\n> *Index:* [[⭐️ Summary - {{startiso}}]]"
         templateText += "\n> *Organizer:* {{organizer}}"
         templateText += "\n> *Attendees:* {{attendeecount}}\n{{#attendees}}{{#link}}  [{{name}}]({{link}}){{/link}}{{^link}}  {{name}}{{/link}}{{/attendees}}"
-        templateText += "\n> *Event ID:* {{eventid}} #zozo/foo/bar"
+        templateText += "\n> *Event ID:* {{eventid}}"
         templateText += "\n---\n{{notes}}\n---\n"
         
         do {
