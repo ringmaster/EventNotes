@@ -11,16 +11,16 @@ import Cocoa
 
 class SheetViewController: NSViewController {
 
-    @IBOutlet weak var dateTagPrefix: NSTextField!
-    @IBOutlet weak var o3TagPrefix: NSTextField!
+    @IBOutlet weak var bearTokenBox: NSTextField!
+    @IBOutlet weak var templatesTagsBox: NSTextField!
     @IBOutlet weak var calList: NSComboBox!
     
-    @IBAction func dateTagChanged(_ sender: NSTextField) {
-        UserDefaults.standard.set(sender.stringValue, forKey: "dateTagPrefix")
+    @IBAction func bearTokenChanged(_ sender: NSTextField) {
+        UserDefaults.standard.set(sender.stringValue, forKey: "bearToken")
     }
     
-    @IBAction func o3TagPrefixChanged(_ sender: NSTextField) {
-        UserDefaults.standard.set(sender.stringValue, forKey: "o3TagPrefix")
+    @IBAction func templatesTagChanged(_ sender: NSTextField) {
+        UserDefaults.standard.set(sender.stringValue, forKey: "templatesTag")
     }
     
     @IBAction func calListChanged(_ sender: NSComboBox) {
@@ -28,17 +28,17 @@ class SheetViewController: NSViewController {
     }
     
     override func viewDidLoad() {
-        if let prefix = UserDefaults.standard.string(forKey: "o3TagPrefix") {
-            o3TagPrefix.stringValue = prefix
+        if let templatestag = UserDefaults.standard.string(forKey: "templatesTag") {
+            templatesTagsBox.stringValue = templatestag
         }
         else {
-            o3TagPrefix.stringValue = "work/O3"
+            templatesTagsBox.stringValue = "templates"
         }
-        if let prefix = UserDefaults.standard.string(forKey: "dateTagPrefix") {
-            dateTagPrefix.stringValue = prefix
+        if let token = UserDefaults.standard.string(forKey: "bearToken") {
+            bearTokenBox.stringValue = token
         }
         else {
-            dateTagPrefix.stringValue = "work/date"
+            bearTokenBox.stringValue = ""
         }
         let calendars = cal.getCalendarList()
         calList.addItems(withObjectValues: calendars)

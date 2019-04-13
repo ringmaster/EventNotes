@@ -55,7 +55,7 @@ class BBCalendar {
                 urlComponents.path = "/open-note"
                 urlComponents.queryItems = [
                     URLQueryItem(name: "id", value: note.identifier),
-                    URLQueryItem(name: "token", value: "3F99E7-04ABA7-96D997"),
+                    URLQueryItem(name: "token", value: self.getDefault(prefix: "bearToken")),
                     URLQueryItem(name: "x-success", value: cback.url?.absoluteString),
                 ]
                 let url = urlComponents.url
@@ -85,8 +85,8 @@ class BBCalendar {
         urlComponents.host = "x-callback-url"
         urlComponents.path = "/search"
         urlComponents.queryItems = [
-            URLQueryItem(name: "tag", value: "templates"),
-            URLQueryItem(name: "token", value: "3F99E7-04ABA7-96D997"),
+            URLQueryItem(name: "tag", value: self.getDefault(prefix: "templatesTag")),
+            URLQueryItem(name: "token", value: self.getDefault(prefix: "bearToken")),
             URLQueryItem(name: "x-success", value: cback.url?.absoluteString),
             URLQueryItem(name: "x-error", value: "eh")
         ]
