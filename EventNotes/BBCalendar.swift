@@ -184,37 +184,6 @@ class BBCalendar {
         
         let title:String = renderTemplate(data: data, type: "title").trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         return title
-
-        /*
-        
-        var title = event.title!
-        
-        let isoFormatter = DateFormatter()
-        isoFormatter.dateFormat = "yyyy-MM-dd"
-        
-        if event.hasRecurrenceRules {
-            if let attendees:[EKParticipant] = event.attendees {
-                if attendees.count == 1 {
-                    var o3name = ""
-                    if(event.organizer!.isCurrentUser) {
-                        o3name = attendees.first!.name!
-                    }
-                    else {
-                        o3name = event.organizer!.name!
-                    }
-                    title = "O3: " + o3name
-                }
-            }
-
-            if returnDate {
-                title = title + " " + isoFormatter.string(from: event.startDate)
-            }
-        }
-        title = title.trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        return title
-        
-        */
     }
     
     public func isO3(event: EKEvent) -> Bool {
@@ -540,6 +509,7 @@ class BBCalendar {
         }
     
         let templaterepo = TemplateRepository(templates: templatemap)
+        templaterepo.configuration.contentType = .text
         do {
             let template = try templaterepo.template(named: "eventnotes")
             template.register(isoFormatter, forKey: "iso_date")
