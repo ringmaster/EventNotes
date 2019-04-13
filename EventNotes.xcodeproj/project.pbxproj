@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		550EA30D2262686300C17037 /* EKEventExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550EA30C2262686300C17037 /* EKEventExt.swift */; };
 		552AD022213DC59100C9AB19 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552AD021213DC59100C9AB19 /* AppDelegate.swift */; };
 		552AD024213DC59100C9AB19 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552AD023213DC59100C9AB19 /* ViewController.swift */; };
 		552AD026213DC59200C9AB19 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 552AD025213DC59200C9AB19 /* Assets.xcassets */; };
@@ -24,6 +25,7 @@
 
 /* Begin PBXFileReference section */
 		28BD756C503379A13C7F5199 /* Pods-EventNotes.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EventNotes.release.xcconfig"; path = "Pods/Target Support Files/Pods-EventNotes/Pods-EventNotes.release.xcconfig"; sourceTree = "<group>"; };
+		550EA30C2262686300C17037 /* EKEventExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EKEventExt.swift; sourceTree = "<group>"; };
 		552AD01E213DC59100C9AB19 /* EventNotes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EventNotes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		552AD021213DC59100C9AB19 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		552AD023213DC59100C9AB19 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 				55495DAB21449E400016A5C4 /* EventMonitor.swift */,
 				555F89102222150900C56C5B /* DayView.swift */,
 				55CAF5FD22234F1F008A2B3A /* SheetViewController.swift */,
+				550EA30C2262686300C17037 /* EKEventExt.swift */,
 			);
 			path = EventNotes;
 			sourceTree = "<group>";
@@ -238,6 +241,7 @@
 				552AD024213DC59100C9AB19 /* ViewController.swift in Sources */,
 				552AD034213DC72B00C9AB19 /* BBCalendar.swift in Sources */,
 				552AD032213DC64300C9AB19 /* CalViewController.swift in Sources */,
+				550EA30D2262686300C17037 /* EKEventExt.swift in Sources */,
 				55CAF5FE22234F1F008A2B3A /* SheetViewController.swift in Sources */,
 				55495DAC21449E400016A5C4 /* EventMonitor.swift in Sources */,
 				552AD022213DC59100C9AB19 /* AppDelegate.swift in Sources */,

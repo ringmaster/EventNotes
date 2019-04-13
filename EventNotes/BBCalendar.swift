@@ -10,10 +10,107 @@ import Foundation
 import Cocoa
 import EventKit
 import Mustache
+import CallbackURLKit
+
+struct BearNoteMeta: Codable {
+    var creationDate: String
+    var title: String
+    var modificationDate: String
+    var identifier: String
+    var pin: String
+}
 
 class BBCalendar {
+    static let shared = BBCalendar()
     private let store = EKEventStore()
+    private var templates: [String: [String: String]] = [:]
 
+    private init() {
+        _ = getStore()
+        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) {_ in
+            self.getTemplates()
+        }
+    }
+    
+    public func getTemplates() {
+        // Register the callbacks to handle Bear returning templates
+        CallbackURLKit.register(action: "test") { parameters, success, failure, cancel in
+            print("Success?")
+            success(nil)
+        }
+        CallbackURLKit.register(action: "settemplates") { parameters, success, failure, cancel in
+            print("Templates supplied")
+            print(parameters)
+            let decoder = JSONDecoder()
+            let notes = try? decoder.decode([BearNoteMeta].self, from: (parameters["notes"]?.data(using: String.Encoding.utf8))!)
+            notes?.forEach { note in
+                var cback = URLComponents()
+                cback.scheme = "eventnotes"
+                cback.host = "x-callback-url"
+                cback.path = "/settemplate"
+                
+                var urlComponents = URLComponents()
+                urlComponents.scheme = "bear"
+                urlComponents.host = "x-callback-url"
+                urlComponents.path = "/open-note"
+                urlComponents.queryItems = [
+                    URLQueryItem(name: "id", value: note.identifier),
+                    URLQueryItem(name: "token", value: "3F99E7-04ABA7-96D997"),
+                    URLQueryItem(name: "x-success", value: cback.url?.absoluteString),
+                ]
+                let url = urlComponents.url
+                if let url:URL = url, NSWorkspace.shared.open(url){
+                    print("Fetched template")
+                }
+                else {
+                    print("Couldn't fetch template!")
+                }
+            }
+            success(nil)
+        }
+        CallbackURLKit.register(action: "settemplate") { parameters, success, failure, cancel in
+            print("Template supplied")
+            self.templates[parameters["title"]!] = self.parseTemplateSections(template: parameters["note"]!)
+            success(nil)
+        }
+
+        // Search for templates in Bear
+        var cback = URLComponents()
+        cback.scheme = "eventnotes"
+        cback.host = "x-callback-url"
+        cback.path = "/settemplates"
+        
+        var urlComponents = URLComponents()
+        urlComponents.scheme = "bear"
+        urlComponents.host = "x-callback-url"
+        urlComponents.path = "/search"
+        urlComponents.queryItems = [
+            URLQueryItem(name: "tag", value: "templates"),
+            URLQueryItem(name: "token", value: "3F99E7-04ABA7-96D997"),
+            URLQueryItem(name: "x-success", value: cback.url?.absoluteString),
+            URLQueryItem(name: "x-error", value: "eh")
+        ]
+        
+        let url = urlComponents.url
+        if let url:URL = url, NSWorkspace.shared.open(url){
+            print("Searched for templates")
+        }
+        else {
+            print("Couldn't search for templates!")
+        }
+
+        
+    }
+    
+    public func parseTemplateSections(template: String) -> [String: String] {
+        let matches = template.allCapturedGroups(withRegex: "```(\\w+)$(.+?)```")
+        var result = [String: String]()
+        for match in matches {
+            result[match[0]] = match[1]
+        }
+        return result
+    }
+    
     public func getStore() -> EKEventStore? {
         if EKEventStore.authorizationStatus(for: .event) != EKAuthorizationStatus.authorized {
             self.store.requestAccess(to: .event, completion: {granted, error in})
@@ -74,6 +171,22 @@ class BBCalendar {
     }
     
     public func getEventTitle(event: EKEvent, returnDate: Bool = true) -> String {
+        let data = [
+            "event": event,
+            "year": Calendar.current.component(.year, from: event.startDate),
+            "month": Calendar.current.component(.month, from: event.startDate),
+            "day": Calendar.current.component(.day, from: event.startDate),
+            "weekday": Calendar.current.component(.weekday, from: event.startDate),
+            "week": Calendar.current.component(.weekOfYear, from: event.startDate),
+            "is_o3": isO3(event: event),
+            "is_summary": false,
+            ] as [String : Any]
+        
+        let title:String = renderTemplate(data: data, type: "title").trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        return title
+
+        /*
+        
         var title = event.title!
         
         let isoFormatter = DateFormatter()
@@ -100,6 +213,17 @@ class BBCalendar {
         title = title.trimmingCharacters(in: .whitespacesAndNewlines)
         
         return title
+        
+        */
+    }
+    
+    public func isO3(event: EKEvent) -> Bool {
+        if let attendees:[EKParticipant] = event.attendees {
+            if attendees.count == 1 {
+                return true
+            }
+        }
+        return false
     }
     
     public func getDefault(prefix: String, postfix: String = "") -> String {
@@ -114,35 +238,6 @@ class BBCalendar {
         else {
             return ""
         }
-    }
-    
-    public func getEventTags(event: EKEvent) -> [String] {
-        let slashFormatter = DateFormatter()
-        slashFormatter.dateFormat = "yyyy/MM/dd"
-        let attendees = event.attendees ?? []
-        
-        var tags = ["deleteme", self.getDefault(prefix: "dateTagPrefix", postfix: "/") + slashFormatter.string(from: event.startDate)]
-        
-        if attendees.count == 1 {
-            var o3name = ""
-            if(event.organizer!.isCurrentUser) {
-                o3name = attendees.first!.name!
-            }
-            else {
-                o3name = event.organizer!.name!
-            }
-            
-            let result = o3name.capturedGroups(withRegex: "^(\\S)\\S+\\s(.+)$")
-            
-            if(result.count>=2) {
-                tags.append(self.getDefault(prefix: "o3TagPrefix", postfix: "/") + result[0].lowercased() + result[1].lowercased())
-            }
-            else {
-                tags.append(self.getDefault(prefix: "o3TagPrefix", postfix: "/") + o3name)
-            }
-        }
-        
-        return tags
     }
     
     public func bluejeansRoom(event:EKEvent? = nil)->String? {
@@ -344,29 +439,6 @@ class BBCalendar {
         dateComponentsFormatter.allowedUnits = [.year,.month,.weekOfMonth,.day,.hour,.minute,.second]
         dateComponentsFormatter.unitsStyle = .abbreviated
         
-        var evts = getEventsByDate(target: target)
-        
-        var index:[String] = []
-        let indexTitle = getSummaryTitle(target: target)
-        
-        evts.sort {
-            return $0.startDate < $1.startDate
-        }
-        
-        for event in evts {
-            if event.hasAttendees {
-                index.append("* [[" + getEventTitle(event: event) + "]] @ " + timeFormatter.string(from: event.startDate) + " for " + dateComponentsFormatter.string(from: event.startDate, to: event.endDate)!)
-            }
-        }
-        
-        var body = "### Schedule\n"
-        body += index.joined(separator: "\n")
-        body += "\n---\n"
-        
-        addNote(title: indexTitle, body: body, tags: ["deleteme", self.getDefault(prefix: "dateTagPrefix", postfix: "/") + slashFormatter.string(from: Calendar.current.startOfDay(for: target)), self.getDefault(prefix: "dateTagPrefix", postfix: "/") + "summary"], show: true)
-    }
-    
-    public func noteFromEvent(event:EKEvent) {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm"
         
@@ -377,61 +449,113 @@ class BBCalendar {
         let isoFormatter = DateFormatter()
         isoFormatter.dateFormat = "yyyy-MM-dd"
         
-        let attendees = event.attendees ?? []
+        var evts = getEventsByDate(target: target)
+        
+        var dataEvents:[[String:Any]] = [[:]]
+        let indexTitle = getSummaryTitle(target: target)
+        
+        evts.sort {
+            return $0.startDate < $1.startDate
+        }
+        
+        for event in evts {
+            let evt = [
+                "title": getEventTitle(event: event),
+                "time": timeFormatter.string(from: event.startDate),
+                "duration": dateComponentsFormatter.string(from: event.startDate, to: event.endDate)!,
+                "has_attendees": event.hasAttendees
+            ] as [String: Any]
+            dataEvents.append(evt)
+        }
+        
+        let data = [
+            "events": dataEvents,
+
+            "start": target,
+            "end": target,
+
+            "year": Calendar.current.component(.year, from: target),
+            "month": Calendar.current.component(.month, from: target),
+            "day": Calendar.current.component(.day, from: target),
+            "weekday": Calendar.current.component(.weekday, from: target),
+            "week": Calendar.current.component(.weekOfYear, from: target),
+            
+            "is_o3": false,
+            "is_summary": true,
+            "is_recurring": false
+        ] as [String: Any]
+        
+        let body = renderTemplate(data: data)
+        
+        addNote(title: indexTitle, body: body, tags: ["deleteme"], show: true)
+    }
+    
+    public func attendeeEmailname(attendee: EKParticipant) -> String {
+        let emailuser = attendee.url.absoluteString.capturedGroups(withRegex: "([^:]+)@")
+        if emailuser.count > 0 {
+            return emailuser[0].lowercased()
+        }
+        else {
+            return attendee.name!
+        }
+    }
+    
+    public func noteFromEvent(event:EKEvent) {
         let title = getEventTitle(event: event)
-        let tags = getEventTags(event: event)
         
-        var templateText = "\n---\n> *Subject:* {{title}}"
-        templateText += "\n> *Start:* [{{start}}](x-fantastical2://show/mini/{{startiso}})"
-        templateText += "\n> *End:* {{end}}"
-        //templateText += "\n> *Attendees:* {{attendeecount}}"
-        templateText += "{{#location}}\n> *Location:* {{location}}{{/location}}"
-        templateText += "\n> *Index:* [[⭐️ Summary - {{startiso}}]]"
-        templateText += "\n> *Organizer:* {{organizer}}"
-        templateText += "\n> *Attendees:* {{attendeecount}}\n{{#attendees}}{{#link}}  [{{name}}]({{link}}){{/link}}{{^link}}  {{name}}{{/link}}{{/attendees}}"
-        templateText += "\n> *Event ID:* {{eventid}}"
-        templateText += "\n---\n{{notes}}\n---\n"
+        let data = [
+            "event": event,
+            "year": Calendar.current.component(.year, from: event.startDate),
+            "month": Calendar.current.component(.month, from: event.startDate),
+            "day": Calendar.current.component(.day, from: event.startDate),
+            "weekday": Calendar.current.component(.weekday, from: event.startDate),
+            "week": Calendar.current.component(.weekOfYear, from: event.startDate),
+            "is_o3": isO3(event: event),
+            "is_summary": false,
+        ] as [String : Any]
+
+        let body:String = renderTemplate(data: data)
         
+        addNote(title: title, body: body, tags: ["deleteme"])
+    }
+    
+    public func renderTemplate(data: [String: Any], type: String = "body") -> String {
+        let templatemap = self.templates.mapValues { t in
+            return t[type] ?? ""
+        }
+        
+        let isoFormatter = DateFormatter()
+        isoFormatter.dateFormat = "yyyy-MM-dd"
+        let dateTimeFormatter = DateFormatter()
+        dateTimeFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+        dateTimeFormatter.formatterBehavior = .behavior10_4
+        dateTimeFormatter.dateStyle = DateFormatter.Style.medium
+        dateTimeFormatter.timeStyle = DateFormatter.Style.medium
+        let slashFormatter = DateFormatter()
+        slashFormatter.dateFormat = "yyyy/MM/dd"
+        let timeFormatter = DateFormatter()
+        timeFormatter.dateFormat = "h:mma"
+        let bluejeansFormatter = Filter { (s: String?) in
+            return (s ?? "").replace(pattern: "\\b(?:https?://\\S*)?bluejeans.com/([\\w\\/]+)", withTemplate: "[☎️ $1](bjnb://meet/id/$1)")
+        }
+    
+        let templaterepo = TemplateRepository(templates: templatemap)
         do {
-            let template = try Template(string: templateText)
-            
-            let attendeeData = attendees.map {
-                let attendee:EKParticipant = $0
-                var link:String? = nil
-                let email = attendee.url.absoluteString
-                let cmmuser = email.capturedGroups(withRegex: "([^:]+)@covermymeds.com")
-                if cmmuser.count > 0 {
-                    link = "https://teamdirectory.covermymeds.com/members/" + cmmuser[0].lowercased()
-                }
-                return ["name": attendee.name, "link": link]
-            } as [[String: String?]]
-            
-            var organizerName = ""
-            if let oragnizer = event.organizer {
-                organizerName = oragnizer.name ?? ""
-            }
-
-            let data = [
-                "event": event,
-                "title": event.title,
-                "start": formatter.string(from: event.startDate),
-                "startiso": isoFormatter.string(from: event.startDate),
-                "end": formatter.string(from: event.endDate),
-                "attendeecount": attendees.count,
-                "attendees": attendeeData,
-                "organizer": organizerName,
-                "location": event.location ?? "",
-                "eventid": event.eventIdentifier,
-                "notes": event.notes ?? ""
-                ] as [String : Any]
-
-            var body:String = try template.render(data)
-            body = body.replace(pattern: "https?://\\S*bluejeans.com/(\\S+)", withTemplate: "bjnb://meet/id/$1")
-            
-            addNote(title: title, body: body, tags: tags)
+            let template = try templaterepo.template(named: "eventnotes")
+            template.register(isoFormatter, forKey: "iso_date")
+            template.register(dateTimeFormatter, forKey: "datetime_date")
+            template.register(slashFormatter, forKey: "slash_date")
+            template.register(timeFormatter, forKey: "time_date")
+            template.register(bluejeansFormatter, forKey: "bluejeans")
+            let body:String = try template.render(data)
+            return body
+        }
+        catch let error as MustacheError {
+            print(error)
+            return "There is an error in your template on line \(error.lineNumber!): \(error.description)  #template_error"
         }
         catch {
-            
+            return "There was an unknown error while rendering a template.  #template_error"
         }
     }
     

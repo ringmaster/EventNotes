@@ -9,7 +9,7 @@
 import Cocoa
 import EventKit
 
-let cal = BBCalendar()
+let cal = BBCalendar.shared
 var bizcache = [String]()
 var nextEvent: EKEvent?
 
@@ -159,6 +159,10 @@ class CalViewController: NSViewController, NSUserNotificationCenterDelegate, Day
     
     @IBAction func joinClicked(_ sender: NSButton) {
         joinMeeting()
+    }
+    
+    @IBAction func getTemplatesClicked(_ sender: Any) {
+        cal.getTemplates()
     }
     
     @IBAction func settingsClicked(_ sender: Any) {

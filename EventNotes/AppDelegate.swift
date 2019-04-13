@@ -17,7 +17,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     let popover = NSPopover()
     var eventMonitor: EventMonitor?
-    let cal = BBCalendar()
+    let cal = BBCalendar.shared
 
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
@@ -50,10 +50,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         manager.callbackURLScheme = Manager.urlSchemes?.first
         manager.registerToURLEvent()
 
-        CallbackURLKit.register(action: "test") { parameters, success, failure, cancel in
-            print("Success?")
-            success(nil)
-        }
         CallbackURLKit.register(action: "create") { parameters, success, failure, cancel in
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd"
