@@ -278,13 +278,13 @@ class DayView : NSView {
             let titleRect = NSRect(origin: titleOrigin, size: textSize)
             var titleAttributes: [NSAttributedString.Key : Any]? = [
                 NSAttributedStringKey.font : NSFont.systemFont(ofSize: 10),
-                NSAttributedStringKey.foregroundColor: NSColor.black
+                NSAttributedStringKey.foregroundColor: NSColor.labelColor
             ]
             if let organizer:EKParticipant = date.organizer {
                 if organizer.isCurrentUser {
                     titleAttributes = [
                         NSAttributedStringKey.font : NSFont.boldSystemFont(ofSize: 10),
-                        NSAttributedStringKey.foregroundColor: NSColor.black
+                        NSAttributedStringKey.foregroundColor: NSColor.labelColor
                     ]
                 }
             }
@@ -300,7 +300,7 @@ class DayView : NSView {
             let placeRect = NSRect(origin: placeOrigin, size: textSize)
             let placeAttributes = [
                 NSAttributedStringKey.font : NSFont.controlContentFont(ofSize: 8),
-                NSAttributedStringKey.foregroundColor: NSColor.black
+                NSAttributedStringKey.foregroundColor: NSColor.labelColor
             ]
             let place = NSString(string: date.location ?? "")
             place.draw(in: placeRect, withAttributes: placeAttributes)
