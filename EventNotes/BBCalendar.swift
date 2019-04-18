@@ -190,8 +190,12 @@ class BBCalendar {
             titletype = "menu"
         }
         
-        let title:String = renderTemplate(data: data, type: titletype).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-        return title
+        if let title:String = renderTemplate(data: data, type: titletype) {
+            return title.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        }
+        else {
+            return event.title
+        }
     }
     
     public func isO3(event: EKEvent) -> Bool {
@@ -462,9 +466,12 @@ class BBCalendar {
             "is_recurring": false
         ] as [String: Any]
         
-        let body = renderTemplate(data: data)
-        
-        addNote(title: indexTitle, body: body, tags: ["deleteme"], show: true)
+        if let body = renderTemplate(data: data) {
+            addNote(title: indexTitle, body: body, tags: ["deleteme"], show: true)
+        }
+        else {
+            alert(message: "Could not render templates", identifier: "addnote")
+        }
     }
     
     public func attendeeEmailname(attendee: EKParticipant) -> String {
@@ -491,14 +498,20 @@ class BBCalendar {
             "is_summary": false,
         ] as [String : Any]
 
-        let body:String = renderTemplate(data: data)
-        
-        addNote(title: title, body: body, tags: ["deleteme"])
+        if let body:String = renderTemplate(data: data) {
+            addNote(title: title, body: body, tags: ["deleteme"])
+        }
+        else {
+            alert(message: "Could not render templates", identifier: "addnote")
+        }
     }
     
-    public func renderTemplate(data: [String: Any], type: String = "body") -> String {
+    public func renderTemplate(data: [String: Any], type: String = "body") -> String? {
         let templatemap = self.templates.mapValues { t in
             return t[type] ?? ""
+        }
+        if self.templates.count == 0 {
+            return nil
         }
         
         let isoFormatter = DateFormatter()
@@ -594,6 +607,18 @@ class BBCalendar {
         }
         
         upsertSummary(target: target)
+    }
+    
+    public func alert(message: String, identifier: String) {
+        
+        let notification = NSUserNotification()
+        notification.identifier = identifier
+        notification.title = "EventNotes Error"
+        notification.subtitle = message
+        
+        // Manually display the notification
+        let notificationCenter = NSUserNotificationCenter.default
+        notificationCenter.deliver(notification)
     }
     
     
