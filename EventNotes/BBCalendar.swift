@@ -106,7 +106,9 @@ class BBCalendar {
         let matches = template.allCapturedGroups(withRegex: "```(\\w+)$(.+?)```")
         var result = [String: String]()
         for match in matches {
-            result[match[0]] = match[1]
+            let tmpl = match[1]
+            let range = tmpl.index(tmpl.startIndex, offsetBy: 1) ..< tmpl.index(tmpl.endIndex, offsetBy: -1)
+            result[match[0]] = String(tmpl[range])
         }
         return result
     }
@@ -180,9 +182,15 @@ class BBCalendar {
             "week": Calendar.current.component(.weekOfYear, from: event.startDate),
             "is_o3": isO3(event: event),
             "is_summary": false,
+            "is_recurring": event.hasRecurrenceRules
             ] as [String : Any]
         
-        let title:String = renderTemplate(data: data, type: "title").trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        var titletype = "title"
+        if !returnDate {
+            titletype = "menu"
+        }
+        
+        let title:String = renderTemplate(data: data, type: titletype).trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         return title
     }
     
@@ -518,6 +526,7 @@ class BBCalendar {
             template.register(timeFormatter, forKey: "time_date")
             template.register(bluejeansFormatter, forKey: "bluejeans")
             let body:String = try template.render(data)
+            
             return body
         }
         catch let error as MustacheError {
