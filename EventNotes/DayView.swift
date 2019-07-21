@@ -234,7 +234,7 @@ class DayView : NSView {
             var path = CGPath(rect: rect, transform: nil)
             var color = NSColor(red: 0.7843137254901961, green: 0.4745098039215686, blue: 0.8666666666666667, alpha: 1.0)
             // Check for 1:1s
-            if date.hasAttendees {
+            if date.hasAttendees, let _:[EKParticipant] = date.attendees {
                 if date.attendees!.count == 1 {
                     color = NSColor(red: 0.3411764705882353, green: 0.7019607843137254, blue: 0.29411764705882354, alpha: 1.0)
                 }

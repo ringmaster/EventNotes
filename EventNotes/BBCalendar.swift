@@ -124,6 +124,7 @@ class BBCalendar {
     }
     
     @objc private func updateStore() {
+        self.store.reset()
         self.store.refreshSourcesIfNecessary()
     }
     
@@ -200,7 +201,7 @@ class BBCalendar {
     
     public func isO3(event: EKEvent) -> Bool {
         if let attendees:[EKParticipant] = event.attendees {
-            if attendees.count == 1 {
+            if attendees.count == 1 && event.hasRecurrenceRules {
                 return true
             }
         }
@@ -496,6 +497,7 @@ class BBCalendar {
             "week": Calendar.current.component(.weekOfYear, from: event.startDate),
             "is_o3": isO3(event: event),
             "is_summary": false,
+            "is_recurring": event.hasRecurrenceRules
         ] as [String : Any]
 
         if let body:String = renderTemplate(data: data) {
